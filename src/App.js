@@ -1,6 +1,6 @@
 import './App.css';
 import React, { createContext, useState, useEffect } from "react";
-import { Route, Routes } from "react-router-dom";
+import { Route, Routes, Navigate } from "react-router-dom";
 import Banner from "./Components/Banner/Main.js";
 import Game from "./Components/Game/Main.js";
 import Home from "./Components/Home/Main.js";
@@ -9,6 +9,7 @@ import Logout from "./Components/Logging/Logout.js";
 import Signup from "./Components/Logging/Signup.js";
 import Profile from "./Components/Profile/Main.js";
 import Taproom from "./Components/Taproom/Main.js";
+import Footer from "./Components/Banner/Footer.js";
 
 const LoggedInContext = createContext();
 const UserContext = createContext();
@@ -34,9 +35,11 @@ function App() {
                 <Route path="/signup" element={<Signup />} />
                 <Route path="/profile" element={<Profile />} />
                 <Route path="/taproom" element={<Taproom />} />
-                <Route path="/" element={<Home />} />
+                <Route path="/home" element={<Home />} />
+                <Route path="/" element={<Navigate to="/home" />} />
               </Routes>
             </div>
+            <Footer />
           </div>
         </>
       </UserContext.Provider>

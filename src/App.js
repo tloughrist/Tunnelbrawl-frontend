@@ -1,6 +1,6 @@
 import './App.css';
 import React, { createContext, useState, useEffect } from "react";
-import { Route, Routes, Navigate } from "react-router-dom";
+import { Route, Routes, Navigate, useNavigate } from "react-router-dom";
 import Banner from "./Components/Banner/Main.js";
 import Game from "./Components/Game/Main.js";
 import Home from "./Components/Home/Main.js";
@@ -21,6 +21,28 @@ function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [user, setUser] = useState();
 
+  const history = useNavigate();
+
+  function onLogin(user) {
+    // async function fetchData() {
+    //   const response = await fetch("/me");
+    //   if (response.ok) {
+    //     const user = await response.json();
+    //     setCurrentUser(user);
+    //     setIsLoggedIn(true);
+    //     fetchFriends(user.id);
+    //     fetchGameNights(user.id);
+    //   } else {
+    //     setIsLoggedIn(false);
+    //   }
+    // };
+    setUser(user);
+    setIsLoggedIn(true);
+    //setLogNav(true);
+    //fetchData();
+    history.push("/home");
+  };
+
   return (
     <LoggedInContext.Provider value={isLoggedIn}>
       <UserContext.Provider value={user}>
@@ -30,7 +52,9 @@ function App() {
             <div id="content_panel">
               <Routes>
                 <Route path="/game" element={<Game />} />
-                <Route path="/login" element={<Login />} />
+                <Route path="/login" element={<Login
+                  onLogin={onLogin}
+                />} />
                 <Route path="/logout" element={<Logout />} />
                 <Route path="/signup" element={<Signup />} />
                 <Route path="/profile" element={<Profile />} />

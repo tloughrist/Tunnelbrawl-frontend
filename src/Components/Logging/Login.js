@@ -23,31 +23,36 @@ function Login({ onLogin }) {
     };
     
     return (
-      <div className="card" id="login">
-        <form onSubmit={handleSubmit}>
-          <label htmlFor="username">
-            username
-          </label>
-          <input
-            type="text"
-            name="username"
-            value={username}
-            className="non_card_input"
-            onChange={(e) => setUsername(e.target.value)}
-          />
-          <label htmlFor="password">
-            password
-          </label>
-          <input
-            type="password"
-            name="password"
-            autoComplete="password"
-            value={password}
-            className="non_card_input"
-            onChange={(e) => setPassword(e.target.value)}
-          />
-          <button className="navlink" type="submit">Login</button>
-        </form>
+      <div className="card" id="login_card">
+        <div id="login_card_top">
+          <div className="brand-logo"></div>
+        </div>
+        <div id="login_card_bottom">
+          <form id="login" onSubmit={handleSubmit}>
+            <label htmlFor="username">
+              username
+              <input
+                type="text"
+                name="username"
+                value={username}
+                className="non_card_input"
+                onChange={(e) => setUsername(e.target.value)}
+              />
+            </label>
+            <label htmlFor="password">
+              password
+              <input
+                type="password"
+                name="password"
+                autoComplete="password"
+                value={password}
+                className="non_card_input"
+                onChange={(e) => setPassword(e.target.value)}
+              />
+            </label>
+            <button className="navlink" type="submit">login</button>
+          </form>
+        </div>
       </div>
     );
 };

@@ -10,6 +10,16 @@ body {
   text-align: center;
 }
 
+.board {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  flex-wrap: nowrap;
+  margin: auto;
+  width: fit-content;
+  top: 20px;
+}
+
 .brand-logo {
   height: 100px;
   width: 100px;
@@ -35,6 +45,10 @@ body {
 .container {
   position: relative;
   z-index: 3;
+}
+
+.game_container {
+  margin: auto;
 }
 
 .navlink {
@@ -65,6 +79,42 @@ body {
 
 .navlink:hover {
   background: #EB6440;
+}
+
+.row {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  width: fit-content;
+}
+
+.space {
+  width: 79px;
+  height: 109px;
+  background-color: darkgray;
+  border: #232323;
+  border-width: 1px;
+  border-style: solid;
+}
+
+.space--empty {
+  background-color: #444444;
+}
+
+.space--blue {
+  background-color: #54579a;
+}
+
+.space--green {
+  background-color: #588963;
+}
+
+.space--red {
+  background-color: #763a3a;
+}
+
+.space--yellow {
+  background-color: #9b8f27;
 }
 
 #banner_container {

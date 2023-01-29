@@ -12,10 +12,10 @@ function UserNav() {
           <span></span>
           <span></span>
           <ul id="menu">
-            <NavLink to="/home" exact className={useLocation().pathname === "/home" ? "navlink navlink-active" : "navlink"}>Home</NavLink>
-            <NavLink to="/games" exact className={useLocation().pathname === "/games" ? "navlink navlink-active" : "navlink"}>Games</NavLink>
-            <NavLink to="/taproom" exact className={useLocation().pathname === "/taproom" ? "navlink navlink-active" : "navlink"}>Taproom</NavLink>
-            <NavLink to="/profile" exact className={useLocation().pathname === "/profile" ? "navlink navlink-active" : "navlink"}>Profile</NavLink>
+            <NavLink to="/home" className={useLocation().pathname === "/home" ? "navlink navlink-active" : "navlink"}>Home</NavLink>
+            <NavLink to="/games" className={useLocation().pathname === "/games" ? "navlink navlink-active" : "navlink"}>Games</NavLink>
+            <NavLink to="/taproom" className={useLocation().pathname === "/taproom" ? "navlink navlink-active" : "navlink"}>Taproom</NavLink>
+            <NavLink to="/profile" className={useLocation().pathname === "/profile" ? "navlink navlink-active" : "navlink"}>Profile</NavLink>
           </ul>
         </div>
       </nav>

@@ -66,7 +66,6 @@ function Profile({ setUser, logout }) {
     if (user.errors) {
       alert(user.errors);
     } else {
-      console.log(user);
       setUser(user);
     }
   };

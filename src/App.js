@@ -2,7 +2,7 @@ import './App.css';
 import React, { createContext, useState, useEffect } from "react";
 import { Route, Routes, Navigate, useNavigate } from "react-router-dom";
 import Banner from "./Components/Banner/Banner.js";
-import Game from "./Components/Game/Game.js";
+import Games from "./Components/Games/Games.js";
 import Home from "./Components/Home/Home.js";
 import Login from "./Components/Logging/Login.js";
 import Logout from "./Components/Logging/Logout.js";
@@ -47,7 +47,6 @@ function App() {
     if (response.ok) {
       const frnds = await response.json();
       setFriends(frnds);
-      console.log(frnds)
     }
   };
 
@@ -64,7 +63,6 @@ function App() {
       }
     };
     setUser(user);
-    console.log(user);
     setIsLoggedIn(true);
     setLogNav(true);
     fetchData();
@@ -87,7 +85,7 @@ function App() {
             <Banner />
             <div id="content_panel">
               <Routes>
-                <Route path="/game" element={<Game />} />
+                <Route path="/games" element={<Games />} />
                 <Route path="/login" element={<Login
                   onLogin={onLogin}
                 />} />

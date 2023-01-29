@@ -6,8 +6,6 @@ function Taproom() {
   const isLoggedIn = useContext(LoggedInContext);
   const friends = useContext(FriendsContext);
 
-  console.log(friends)
-
   return (
     <div>
       <h3>Taproom</h3>

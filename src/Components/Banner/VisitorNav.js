@@ -15,7 +15,7 @@ function VisitorNav() {
             <NavLink to="/home" className={useLocation().pathname === "/home" ? "navlink navlink-active" : "navlink"}>Home</NavLink>
             <NavLink to="/login" className={useLocation().pathname === "/login" ? "navlink navlink-active" : "navlink"}>Login</NavLink>
             <NavLink to="/signup" className={useLocation().pathname === "/signup" ? "navlink navlink-active" : "navlink"}>Signup</NavLink>
-            </ul>
+          </ul>
         </div>
       </nav>
     </div>

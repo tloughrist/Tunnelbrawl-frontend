@@ -27,10 +27,13 @@ function Profile({ setUser, logout }) {
   }, [user]);
 
   useEffect(() => {
-    if (isLoggedIn === false) {
-      navigate("/home");
+    function sendHome(logStatus) {
+      if (logStatus === false) {
+        navigate("/home");
+      }
     }
-  }, [isLoggedIn]);
+    sendHome(isLoggedIn);
+  }, [])
 
   async function handleLogout() {
     await fetch("/logout", {
@@ -61,11 +64,11 @@ function Profile({ setUser, logout }) {
         pic_url: pic,
         }),
       });
-    const user = await res.json();
-    if (user.errors) {
-      alert(user.errors);
+    const usr = await res.json();
+    if (usr.errors) {
+      alert(usr.errors);
     } else {
-      setUser(user);
+      setUser(usr);
     }
   };
 
@@ -105,6 +108,7 @@ function Profile({ setUser, logout }) {
                       type="email"
                       name="email"
                       value={email}
+                      placeholder={email}
                       onChange={(e) => setEmail(e.target.value)}
                     />
                   </label>
@@ -114,6 +118,7 @@ function Profile({ setUser, logout }) {
                       type="url"
                       name="pic"
                       value={pic}
+                      placeholder={pic}
                       onChange={(e) => setPic(e.target.value)}
                     />
                   </label>

@@ -7,18 +7,17 @@ function inBounds(number) {
 };
 
 function occupied(space, boardObj) {
-  const location = `loc${space}`;
-  const occ = boardObj[location] !== null ? true : false;
+  const obj = boardObj.find(({loc}) => loc === space);
+  const contents = obj.contents.img.props.className;
+  const occ = contents === "empty" ? false : true;
   return occ;
 };
 
 function opponent(space, boardObj, color) {
-  const location = `loc${space}`;
-  const occupant = boardObj[location];
-  if (occupant) {
-    const activeLetter = Array.from(color)[0];
-    const occupantLetter = Array.from(occupant)[0];
-    const opp = activeLetter !== occupantLetter ? true : false; 
+  if (occupied(space, boardObj)) {
+    const obj = boardObj.find(({loc}) => loc === space);
+    const contents = obj.contents.img.props.className;
+    const opp = contents.includes(color) ? false : true;
     return opp;
   }
 };
@@ -39,8 +38,7 @@ function step(init, displacement, array, board, altArray, color) {
   let nextSquare = init + displacement;
   if (inBounds(nextSquare) && !occupied(nextSquare, board)) {
     array.push(nextSquare);
-  }
-  if (opponent(nextSquare, board, color)) {
+  } else if (inBounds(nextSquare) && (opponent(nextSquare, board, color))) {
     altArray.push(nextSquare);
   }
 };
@@ -142,6 +140,7 @@ function pawnMoves(start, board, color) {
       if (opponent((start + 11), board, color)) {
         capturing.push((start + 11));
       }
+      console.log({piece: piece, blocks: blocking, capture: capturing})
       return {piece: piece, blocks: blocking, capture: capturing}
     case "blue":
       firstMove = (start === 26 || 36 || 46 || 56? true : false);

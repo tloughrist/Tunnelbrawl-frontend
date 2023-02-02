@@ -19,7 +19,7 @@ export { LoggedInContext, UserContext, FriendsContext };
 
 function App() {
 
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState("unchecked");
   const [user, setUser] = useState();
   const [friends, setFriends] = useState([]);
   const [logNav, setLogNav] = useState(false);

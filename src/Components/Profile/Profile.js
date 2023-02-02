@@ -20,7 +20,6 @@ function Profile({ setUser, logout }) {
       setEmail(user.email);
       setPic(user.pic_url);
       setIsLoaded(true);
-      console.log("setStates")
     };
     if (user) {
       setStates();

@@ -7,10 +7,12 @@ function inBounds(number) {
 };
 
 function occupied(space, boardObj) {
-  const obj = boardObj.find(({loc}) => loc === space);
-  const contents = obj.contents.img.props.className;
-  const occ = contents === "empty" ? false : true;
-  return occ;
+  if (inBounds(space)) {
+    const obj = boardObj.find(({loc}) => loc === space);
+    const contents = obj.contents.img.props.className;
+    const occ = contents === "empty" ? false : true;
+    return occ;
+  }
 };
 
 function opponent(space, boardObj, color) {
@@ -123,7 +125,7 @@ function pawnMoves(start, board, color) {
 
   switch(color){
     case "red":
-      firstMove = (start === 21 || 31 || 41 || 51? true : false);
+      firstMove = (start % 10 === 1 ? true : false);
       step(start, 1, piece, board, blocking, color);
       if (firstMove) {
         step(start, 2, piece, board, blocking, color);
@@ -140,10 +142,9 @@ function pawnMoves(start, board, color) {
       if (opponent((start + 11), board, color)) {
         capturing.push((start + 11));
       }
-      console.log({piece: piece, blocks: blocking, capture: capturing})
       return {piece: piece, blocks: blocking, capture: capturing}
     case "blue":
-      firstMove = (start === 26 || 36 || 46 || 56? true : false);
+      firstMove = (start % 10 === 6 ? true : false);
       step(start, -Math.abs(1), piece, board, blocking, color);
       if (firstMove) {
         step(start, -Math.abs(2), piece, board, blocking, color);
@@ -162,7 +163,7 @@ function pawnMoves(start, board, color) {
       }
       return {piece: piece, blocks: blocking, capture: capturing}
     case "green":
-      firstMove = (start === 12 || 13 || 14 || 15? true : false);
+      firstMove = ((start > 11 && start < 16) ? true : false);
       step(start, 10, piece, board, blocking, color);
       if (firstMove) {
         step(start, 20, piece, board, blocking, color);
@@ -181,7 +182,7 @@ function pawnMoves(start, board, color) {
       }
       return {piece: piece, blocks: blocking, capture: capturing}
     case "yellow":
-      firstMove = (start === 62 || 63 || 64 || 65? true : false);
+      firstMove = ((start > 61 && start < 66) ? true : false);
       step(start, -Math.abs(10), piece, board, blocking, color);
       if (firstMove) {
         step(start, -Math.abs(20), piece, board, blocking, color);

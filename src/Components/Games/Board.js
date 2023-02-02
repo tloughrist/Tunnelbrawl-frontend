@@ -51,8 +51,7 @@ function Board({ game, games, setGames }) {
   useEffect(() => {
     if (moved) {
       if (window.confirm("Confirm move?")) {
-        //submitBoard(boardArr);
-        console.log(boardArr)
+        submitBoard(unconvert(boardArr));
       } else {
         populateBoard();
       }
@@ -118,12 +117,11 @@ function Board({ game, games, setGames }) {
   };
 
   function movePiece(e) {
-    //&& (game.phase === "move")
-    if ((activePiece.contents.color === game.turn)) {
+    if ((activePiece.contents.color === game.game.turn) && (game.game.phase === "move")) {
       populateBoard();
       const space = parseInt(e.target.parentNode.id);
-      handleCapture(space);
       const board = convert(game.board);
+      handleCapture(space, board);
       replaceContents(board, activePiece.loc, {img: empty});
       replaceContents(board, space, activePiece.contents)
       setMoved(true);
@@ -139,23 +137,11 @@ function Board({ game, games, setGames }) {
     setBoardArr([...boardSans, location]);
   }
 
-  function handleCapture(space) {
-  }
-
-  function confirmMove(startLoc, finishLoc, piece) {
-    if (window.confirm("Confirm move?")) {
-      console.log(boardArr)
-      const formatStartLoc = `loc${startLoc}`;
-      const formatFinishLoc = `loc${finishLoc}`;
-      const newBoard = boardArr;
-      newBoard[formatStartLoc] = null;
-      newBoard[formatFinishLoc] = piece;
-      //game.phase = "place";
-      console.log(newBoard)
-      //submitBoard(newBoard);
-      //submitGame(game);
-    } else {
-      populateBoard();
+  function handleCapture(space, board) {
+    const location = board.find(({loc}) => loc === space);
+    const isOpponent = (location.contents.color !== game.game.turn);
+    if (isOpponent) {
+      console.log("move piece to graveyard and update boardArr state");
     }
   };
 
@@ -169,33 +155,76 @@ function Board({ game, games, setGames }) {
       });
     if (res.ok) {
       const brd = await res.json();
-      //setPreviousBoardArr(brd);
+      setBoardArr(convert(brd));
+      submitGame(game.game, convert(brd));
     } else {
-      alert(res.errors);
+      console.log(res.errors);
     }
   };
 
-  async function submitGame(game) {
+  async function submitGame(game, board) {
+    const newGameState = calcGameState(game);
+    const newGameStatus = calcGameStatus(board);
+    newGameState.status = newGameStatus;
     const res = await fetch(`/games/${game.id}`, {
       method: "PATCH",
       headers: {
           "Content-Type": "application/json",
       },
-      body: JSON.stringify({
-        round: game.round,
-        turn: game.turn,
-        phase: game.phase,
-        status: game.status
-      }),
+      body: JSON.stringify(newGameState),
       });
     if (res.ok) {
       const gme = await res.json();
       const gamesSans = games.filter((el) => el.id !== gme.id);
       setGames([...gamesSans, gme]);
     } else {
-      alert(res.errors);
+      console.log(res.errors);
     }
   };
+
+  function calcGameState(game) {
+    const noPlayers = game.no_players
+    if (game.phase === "move") {
+      return {phase: "place"}
+    } else {
+      switch(game.no_players) {
+        case 2: {
+          switch(game.turn) {
+            case "red":
+              return {phase: "move", turn: "blue"};
+            case "blue":
+              return {phase: "move", turn: "red", round: game.round + 1};
+          };
+        };
+        case 3: {
+          switch(game.turn) {
+            case "red":
+              return {phase: "move", turn: "green"};
+            case "green":
+              return {phase: "move", turn: "blue"};
+            case "blue":
+              return {phase: "move", turn: "red", round: game.round + 1};
+          };
+        };
+        case 4: {
+          switch(game.turn) {
+            case "red":
+              return {phase: "move", turn: "green"};
+            case "green":
+              return {phase: "move", turn: "blue"};
+            case "blue":
+              return {phase: "move", turn: "yellow"};
+            case "yellow":
+              return {phase: "move", turn: "red", round: game.round + 1};
+          };
+        };
+      };
+    };
+  };
+
+  function calcGameStatus(board) {
+    return "in progress";
+  }
 
   function pieceConvert(string) {
     switch(string){
@@ -277,8 +306,14 @@ function Board({ game, games, setGames }) {
       const contKey = Object.keys(obj)[1]
       const acroKey = Object.keys(obj[contKey])[3];
       const key = `loc${obj[locKey]}`;
-      const contents = obj[contKey][acroKey];
-      unconvertedBoard[key] = contents;
+      const contents = obj[contKey];
+      let newValue = "";
+      if (acroKey) {
+        newValue = contents[acroKey];
+      } else {
+        newValue = null;
+      }
+      unconvertedBoard[key] = newValue;
     });
     nonSpaceObjs.forEach((obj) => {
       const key = Object.keys(obj)[0];

@@ -16,7 +16,8 @@ body {
   flex-direction: column;
   flex-wrap: nowrap;
   margin: auto;
-  width: fit-content;
+  width: 485px;
+  height: 666px;
   top: 20px;
 }
 
@@ -50,10 +51,20 @@ body {
 .empty {
   width: 100%;
   height: 100%;
-} 
+}
+
+.filter--red {
+  opacity: 100%;
+}
+
+.filter--yellow {
+  opacity: 100%;
+}
 
 .game_container {
   margin: auto;
+  display: flex;
+  flex-direction: column;
 }
 
 .hidden {
@@ -90,6 +101,11 @@ body {
   background: #EB6440;
 }
 
+.piece {
+  width: 100%;
+  height: 100%;
+}
+
 .row {
   display: flex;
   flex-direction: row;
@@ -104,6 +120,11 @@ body {
   border: #232323;
   border-width: 1px;
   border-style: solid;
+}
+
+.space img {
+  width: 100%;
+  height: 100%;
 }
 
 .space--empty {
@@ -170,6 +191,12 @@ body {
   z-index: 10;
 }
 
+#hand {
+  position: relative;
+  left: 100px;
+  top: 20px;
+}
+
 #login {
   display: flex;
   flex-direction: column;
@@ -224,7 +251,8 @@ body {
   position: relative;
   top: 50px;
   left: 50px;
-  width: 150px;
+  width: 50px;
+  height: 50px;
   z-index: 12;
   user-select: none;
 }
@@ -248,7 +276,7 @@ body {
   left: -5px;
   cursor: pointer;
   opacity: 0;
-  z-index: 12;
+  z-index: 900;
 }
 
 #menuToggle span {
@@ -317,6 +345,10 @@ body {
 
 #menuToggle input:checked ~ ul {
   transform: none; 
+}
+#playing_field {
+  display: flex;
+  flex-direction: row;
 }
 
 #profile_card {

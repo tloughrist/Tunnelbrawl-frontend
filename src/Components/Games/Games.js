@@ -6,6 +6,7 @@ import { LoggedInContext, UserContext } from '../../App';
 function Games() {
   
   const [games, setGames] = useState([]);
+  const [isLoaded, setIsLoaded] = useState(false);
 
   const isLoggedIn = useContext(LoggedInContext);
   const user = useContext(UserContext);
@@ -30,16 +31,21 @@ function Games() {
   async function fetchGames(userId) {
     const response = await fetch(`users/${userId}/games`);
     if (response.ok) {
-      const gmes = await response.json();
-      setGames(gmes);
+      const pkgs = await response.json();
+      setGames(pkgs);
+      setIsLoaded(true);
     }
   };
 
   return (
     <div>
-      <div className="game_container">
-        <Board game={games[0]} games={games} setGames={setGames} />
-      </div>
+      {
+        isLoaded ?
+          <div className="game_container">
+            <Board game={games[0].game} board={games[0].board} setGames={setGames} />
+          </div>
+        : <h3>Loading...</h3>
+      } 
     </div>
   );
 };

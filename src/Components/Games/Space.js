@@ -4,7 +4,6 @@ import { BoardContext } from './Board.js';
 function Space({ color, id }) { 
   
   const board = useContext(BoardContext);
-
   function findContents(locNum) {
     const obj = board.find(({loc}) => loc === locNum);
     return obj.contents;

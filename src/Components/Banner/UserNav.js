@@ -7,7 +7,7 @@ function UserNav() {
       <nav role="navigation">
         <div id="tab"></div>
         <div id="menuToggle">
-          <input type="checkbox" />
+          <input type="checkbox" id="menu_actuator" />
           <span></span>
           <span></span>
           <span></span>

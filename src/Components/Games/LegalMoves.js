@@ -28,8 +28,9 @@ function slide(init, displacement, array, board, altArray, color) {
   let position = init;
   let nextSquare = position + displacement;
   while (inBounds(nextSquare) && !occupied(nextSquare, board)) {
+    console.log(nextSquare)
     array.push(nextSquare);
-    position = nextSquare;
+    nextSquare += displacement;
   }
   if (opponent(nextSquare, board, color)) {
     altArray.push(nextSquare);
@@ -54,7 +55,7 @@ function bishopMoves(start, board, color) {
   slide(start, 9, piece, board, opponents, color);
   slide(start, 11, piece, board, opponents, color);
 
-  return {moves: piece, opponents: opponents};
+  return {piece: piece, capture: opponents};
 };
 
 function rookMoves(start, board, color) {
@@ -66,7 +67,7 @@ function rookMoves(start, board, color) {
   slide(start, 1, piece, board, opponents, color);
   slide(start, 10, piece, board, opponents, color);
 
-  return {moves: piece, opponents: opponents};
+  return {piece: piece, capture: opponents};
 };
 
 function queenMoves(start, board, color) {
@@ -82,23 +83,23 @@ function queenMoves(start, board, color) {
   slide(start, 1, piece, board, opponents, color);
   slide(start, 10, piece, board, opponents, color);
 
-  return {moves: piece, opponents: opponents};
+  return {piece: piece, capture: opponents};
 };
 
 function knightMoves(start, board, color) {
   const piece = [];
   const opponents = [];
 
-  step(start, -Math.abs(31), piece, board, opponents, color);
-  step(start, -Math.abs(29), piece, board, opponents, color);
-  step(start, -Math.abs(7), piece, board, opponents, color);
-  step(start, 31, piece, board, opponents, color);
-  step(start, 13, piece, board, opponents, color);
-  step(start, -Math.abs(13), piece, board, opponents, color);
-  step(start, 7, piece, board, opponents, color);
-  step(start, 29, piece, board, opponents, color);
+  step(start, -Math.abs(21), piece, board, opponents, color);
+  step(start, -Math.abs(19), piece, board, opponents, color);
+  step(start, -Math.abs(8), piece, board, opponents, color);
+  step(start, 12, piece, board, opponents, color);
+  step(start, 21, piece, board, opponents, color);
+  step(start, -Math.abs(12), piece, board, opponents, color);
+  step(start, 19, piece, board, opponents, color);
+  step(start, 8, piece, board, opponents, color);
 
-  return {moves: piece, opponents: opponents};
+  return {piece: piece, capture: opponents};
 };
 
 function kingMoves(start, board, color) {
@@ -114,7 +115,7 @@ function kingMoves(start, board, color) {
   step(start, -Math.abs(1), piece, board, opponents, color);
   step(start, -Math.abs(11), piece, board, opponents, color);
 
-  return {moves: piece, opponents: opponents};
+  return {piece: piece, capture: opponents};
 };
 
 function pawnMoves(start, board, color) {

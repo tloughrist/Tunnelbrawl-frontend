@@ -4,7 +4,7 @@ import {knightMoves, bishopMoves, rookMoves, queenMoves, kingMoves, pawnMoves} f
 
 export const BoardContext = createContext();
 
-function Board({ game, games, setGames }) {
+function Board({ game, board, setGames }) {
 
   const empty = <div className="empty" onClick={populateBoard} ></div>;
   const yellow_filter = <img className="filter--yellow" src="./pieces/yellow_filter.png" alt="yellow filter" onClick={movePiece} />;
@@ -36,21 +36,31 @@ function Board({ game, games, setGames }) {
 
   const [boardArr, setBoardArr] = useState();
   const [isLoaded, setIsLoaded] = useState(false);
+  const [turn, setTunr] = useState("");
   const [moved, setMoved] = useState(false);
 
   let activePiece = "";
+  let hand1 = 101;
+  let hand2 = 102;
+  let hand3 = 103;
+  let hand4 = 104;
+  let handcolor = "red";
 
   useEffect(() => {
     if (game) {
-      setBoardArr(convert(game.board));
+      setBoardArr(convert(board));
       setIsLoaded(true);
       setMoved(false);
+      handleHand(game)
     }
   }, [game]);
 
   useEffect(() => {
     if (moved) {
       if (window.confirm("Confirm move?")) {
+        if (game.phase === "place") {
+          handleDraw();
+        }
         submitBoard(unconvert(boardArr));
       } else {
         populateBoard();
@@ -58,39 +68,128 @@ function Board({ game, games, setGames }) {
     }
   }, [moved]);
 
+  function handleDraw() {
+    const hand = boardArr.filter(({loc}) => (loc === hand1 || loc === hand2 || loc === hand3 || loc === hand4));
+    const emptyHand = hand.find((space) => space.contents.img.props.className === "empty");
+    const deck = boardArr.filter(({loc}) => (loc === hand1 + 10 || loc === hand1 + 11 || loc === hand1 + 12 || loc === hand1 + 13 || loc === hand1 + 14 || loc === hand1 + 14 || loc === hand1 + 15 || loc === hand1 + 17));
+    function draw() {
+      let level = 0;
+      while (level < 8) {
+        if (deck[level] === null) {
+          level += 1;
+        } else {
+          emptyHand.contents = deck[level].contents;
+          deck[level] = null;
+          break;
+        }
+      }
+    };
+    draw();
+    const handSans = hand.filter(({loc}) => loc !== emptyHand.loc);
+    const newHand = [...handSans, emptyHand];
+    const replacements = [...newHand, ...deck]
+    const boardSans = boardArr.filter(({loc}) => (loc < hand1 || loc > hand1 + 17));
+    const newBoard = [...boardSans, ...replacements];
+    setBoardArr(newBoard);
+  };
+
+  function handleHand(game) {
+    switch(game.turn) {
+      case "red":
+        handcolor = "red";
+        hand1 = 101;
+        hand2 = 102;
+        hand3 = 103;
+        hand4 = 104;
+        break;
+      case "green":
+        handcolor = "green"
+        hand1 = 201;
+        hand2 = 202;
+        hand3 = 203;
+        hand4 = 204;
+        break;
+      case "blue":
+        handcolor = "blue"
+        hand1 = 301;
+        hand2 = 302;
+        hand3 = 303;
+        hand4 = 304;
+        break;
+      case "yellow":
+        handcolor = "yellow"
+        hand1 = 401;
+        hand2 = 402;
+        hand3 = 403;
+        hand4 = 404;
+        break;
+      default:
+        return;
+    }
+  };
+
   function populateBoard() {
-    setBoardArr(convert(game.board));
+    setBoardArr(convert(board));
   }
 
-  function showMoves(e) {
+  function showMoves(e) { 
     const color = e.target.classList[0];
     const type = e.target.classList[1];
     const space = parseInt(e.target.parentNode.id);
-    const board = convert(game.board);
-    activePiece = board.find(({loc}) => loc === space);
+    const convertedBoard = convert(board);
+    activePiece = convertedBoard.find(({loc}) => loc === space);
     let moves = "";
-    switch(type) {
-      case "pawn":
-        moves = pawnMoves(space, board, color);
-        break;
-      case "rook":
-        moves = rookMoves(space, board, color);
-        break;
-      case "knight":
-        moves = knightMoves(space, board, color);
-        break;
-      case "bishop":
-        moves = bishopMoves(space, board, color);
-        break;
-      case "queen":
-        moves = queenMoves(space, board, color);
-        break;
-      case "king":
-        moves = kingMoves(space, board, color);
-        break;
+    if ((space % 100 < 5)) {
+      switch(color) {
+          case "red":
+          const redcamp = convertedBoard.filter(({loc}) => ( loc === 21 || loc === 31 || loc === 41 || loc === 51 ));
+          const redmoveUp = redcamp.find((space) => space.contents.img.props.className === "empty");
+          moves = {piece: [redmoveUp?.loc], capture: []};
+          break;
+        case "green":
+          const greencamp = convertedBoard.filter(({loc}) => ( loc > 11 && loc < 16 ));
+          const greenmoveUp = greencamp.find((space) => space.contents.img.props.className === "empty");
+          moves = {piece: [greenmoveUp.loc], capture: []};
+          break;
+        case "blue":
+          const bluecamp = convertedBoard.filter(({loc}) => ( loc === 26 || loc === 36 || loc === 46 || loc === 56 ));
+          const bluemoveUp = bluecamp.find((space) => space.contents.img.props.className === "empty");
+          moves = {piece: [bluemoveUp.loc], capture: []};
+          break;
+        case "yellow":
+          const yellowcamp = convertedBoard.filter(({loc}) => ( loc > 61 && loc < 66 ));
+          const yellowmoveUp = yellowcamp.find((space) => space.contents.img.props.className === "empty");
+          moves = {piece: [yellowmoveUp.loc], capture: []};
+          break;
+        default:
+          return;
+      }
+    } else if (space >= 12 && space <= 65) {
+      switch(type) {
+        case "pawn":
+          moves = pawnMoves(space, convertedBoard, color);
+          break;
+        case "rook":
+          moves = rookMoves(space, convertedBoard, color);
+          break;
+        case "knight":
+          moves = knightMoves(space, convertedBoard, color);
+          break;
+        case "bishop":
+          moves = bishopMoves(space, convertedBoard, color);
+          break;
+        case "queen":
+          moves = queenMoves(space, convertedBoard, color);
+          break;
+        case "king":
+          moves = kingMoves(space, convertedBoard, color);
+          break;
+        default:
+          return;
+      }
     };
     populateBoard();
-    setBoardArr(tempBoard(moves, board));
+    setBoardArr(tempBoard(moves, convertedBoard));
   };
 
   function tempBoard(moves, board) {
@@ -101,7 +200,7 @@ function Board({ game, games, setGames }) {
         spaceObj.contents = {img: yellow_filter};
         const boardSans = boardHolder.filter((obj) => obj.loc !== move);
         const newBoard = [...boardSans, spaceObj];
-        boardHolder = newBoard;
+        return boardHolder = newBoard;
       });
     }
     if (moves.capture.length > 0) {
@@ -110,20 +209,27 @@ function Board({ game, games, setGames }) {
         spaceObj.contents = {img: red_filter};
         const boardSans = boardHolder.filter((obj) => obj.loc !== move);
         const newBoard = [...boardSans, spaceObj];
-        boardHolder = newBoard;
+        return boardHolder = newBoard;
       });
     }
     return boardHolder;
   };
 
   function movePiece(e) {
-    if ((activePiece.contents.color === game.game.turn) && (game.game.phase === "move")) {
+    if ((activePiece.contents.color === game.turn) && (game.phase === "move")) {
       populateBoard();
       const space = parseInt(e.target.parentNode.id);
-      const board = convert(game.board);
-      handleCapture(space, board);
-      replaceContents(board, activePiece.loc, {img: empty});
-      replaceContents(board, space, activePiece.contents)
+      const convertedBoard = convert(board);
+      handleCapture(space, convertedBoard);
+      replaceContents(convertedBoard, activePiece.loc, {img: empty});
+      replaceContents(convertedBoard, space, activePiece.contents)
+      setMoved(true);
+    } else if ((game.phase === "place") && (activePiece.loc === hand1 || activePiece.loc === hand2 || activePiece.loc === hand3 || activePiece.loc === hand4)) {
+      populateBoard();
+      const space = parseInt(e.target.parentNode.id);
+      const convertedBoard = convert(board);
+      replaceContents(convertedBoard, activePiece.loc, {img: empty});
+      replaceContents(convertedBoard, space, activePiece.contents)
       setMoved(true);
     } else {
       alert("Sorry, you cannot move that piece right now.");
@@ -139,7 +245,7 @@ function Board({ game, games, setGames }) {
 
   function handleCapture(space, board) {
     const location = board.find(({loc}) => loc === space);
-    const isOpponent = (location.contents.color !== game.game.turn);
+    const isOpponent = (location.contents.color !== game.turn);
     if (isOpponent) {
       console.log("move piece to graveyard and update boardArr state");
     }
@@ -156,7 +262,7 @@ function Board({ game, games, setGames }) {
     if (res.ok) {
       const brd = await res.json();
       setBoardArr(convert(brd));
-      submitGame(game.game, convert(brd));
+      submitGame(game, convert(brd));
     } else {
       console.log(res.errors);
     }
@@ -174,9 +280,8 @@ function Board({ game, games, setGames }) {
       body: JSON.stringify(newGameState),
       });
     if (res.ok) {
-      const gme = await res.json();
-      const gamesSans = games.filter((el) => el.id !== gme.id);
-      setGames([...gamesSans, gme]);
+      const pkg = await res.json();
+      setGames(pkg);
     } else {
       console.log(res.errors);
     }
@@ -194,6 +299,8 @@ function Board({ game, games, setGames }) {
               return {phase: "move", turn: "blue"};
             case "blue":
               return {phase: "move", turn: "red", round: game.round + 1};
+            default:
+              return;
           };
         };
         case 3: {
@@ -204,6 +311,8 @@ function Board({ game, games, setGames }) {
               return {phase: "move", turn: "blue"};
             case "blue":
               return {phase: "move", turn: "red", round: game.round + 1};
+            default:
+              return;
           };
         };
         case 4: {
@@ -216,8 +325,12 @@ function Board({ game, games, setGames }) {
               return {phase: "move", turn: "yellow"};
             case "yellow":
               return {phase: "move", turn: "red", round: game.round + 1};
+            default:
+              return;
           };
         };
+        default:
+          return;
       };
     };
   };
@@ -296,6 +409,40 @@ function Board({ game, games, setGames }) {
     });
     return convertedBoard;
   };
+
+  async function startGame(gameId) {
+    const res = await fetch(`/games/initialize/${gameId}`, {
+      method: "PUT",
+      headers: {
+          "Content-Type": "application/json",
+      },
+      body: JSON.stringify({status: "active"}),
+    });
+    if (res.ok) {
+      const pkg = await res.json();
+      setIsLoaded(false);
+      setGames(pkg);
+    } else {
+      console.log(res.errors);
+    }
+  };
+
+  async function resetGame(gameId) {
+    const res = await fetch(`/games/initialize/${gameId}`, {
+      method: "PUT",
+      headers: {
+          "Content-Type": "application/json",
+      },
+      body: JSON.stringify({turn: "red", phase: "move", round: 1}),
+    });
+    if (res.ok) {
+      const pkg = await res.json();
+      setIsLoaded(false);
+      setGames(pkg);
+    } else {
+      console.log(res.errors);
+    }
+  };
   
   function unconvert(boardArr) {
     const unconvertedBoard = {};
@@ -326,54 +473,77 @@ function Board({ game, games, setGames }) {
   return (
     isLoaded ?
       <BoardContext.Provider value={boardArr}>
-        <div className="board">
-          <div className="row" id="row_1">
-            <div className="space empty space--empty" id={"01"}></div>
-            <Space color={"space--green"} id={"12"} />
-            <Space color={"space--green"} id={"13"} />
-            <Space color={"space--green"} id={"14"} />
-            <Space color={"space--green"} id={"15"} />
-            <div className="space empty space--empty" id={"02"}></div>
+        <div id="playing_field">
+          <div className="buttons_container">
+            {
+              game.status === "pending" ?
+                <button id="start_game" onClick={(e) => startGame(game.id)}>Start Game</button>
+              : <button id="reset_game" onClick={(e) => resetGame(game.id)}>Reset Game</button>
+            }
           </div>
-          <div className="row" id="row_2">
-            <Space color={"space--red"} id={"21"} />
-            <Space color={"empty"} id={"22"} />
-            <Space color={"empty"} id={"23"} />
-            <Space color={"empty"} id={"24"} />
-            <Space color={"empty"} id={"25"} />
-            <Space color={"space--blue"} id={"26"} />
+          <div id="hand">
+            <div className="row" id="row_0">
+              <Space color={`space--${handcolor}`} id={hand1} />
+              <Space color={`space--${handcolor}`} id={hand2} />
+              <Space color={`space--${handcolor}`} id={hand3} />
+              <Space color={`space--${handcolor}`} id={hand4} />
+            </div>
           </div>
-          <div className="row" id="row_3">
-            <Space color={"space--red"} id={"31"} />
-            <Space color={"empty"} id={"32"} />
-            <Space color={"empty"} id={"33"} />
-            <Space color={"empty"} id={"34"} />
-            <Space color={"empty"} id={"35"} />
-            <Space color={"space--blue"} id={"36"} />
+          <div className="player_graveyard">
+
+          </div> 
+          <div className="board"> 
+            <div className="row" id="row_1">
+              <div className="space empty space--empty" id={"01"}></div>
+              <Space color={"space--green"} id={"12"} />
+              <Space color={"space--green"} id={"13"} />
+              <Space color={"space--green"} id={"14"} />
+              <Space color={"space--green"} id={"15"} />
+              <div className="space empty space--empty" id={"02"}></div>
+            </div>
+            <div className="row" id="row_2">
+              <Space color={"space--red"} id={"21"} />
+              <Space color={"empty"} id={"22"} />
+              <Space color={"empty"} id={"23"} />
+              <Space color={"empty"} id={"24"} />
+              <Space color={"empty"} id={"25"} />
+              <Space color={"space--blue"} id={"26"} />
+            </div>
+            <div className="row" id="row_3">
+              <Space color={"space--red"} id={"31"} />
+              <Space color={"empty"} id={"32"} />
+              <Space color={"empty"} id={"33"} />
+              <Space color={"empty"} id={"34"} />
+              <Space color={"empty"} id={"35"} />
+              <Space color={"space--blue"} id={"36"} />
+            </div>
+            <div className="row" id="row_4">
+              <Space color={"space--red"} id={"41"} />
+              <Space color={"empty"} id={"42"} />
+              <Space color={"empty"} id={"43"} />
+              <Space color={"empty"} id={"44"} />
+              <Space color={"empty"} id={"45"} />
+              <Space color={"space--blue"} id={"46"} />
+            </div>
+            <div className="row" id="row_5">
+              <Space color={"space--red"} id={"51"} />
+              <Space color={"empty"} id={"52"} />
+              <Space color={"empty"} id={"53"} />
+              <Space color={"empty"} id={"54"} />
+              <Space color={"empty"} id={"55"} />
+              <Space color={"space--blue"} id={"56"} />
+            </div>
+            <div className="row" id="row_6">
+              <div className="space empty space--empty" id={"03"}></div>
+              <Space color={"space--yellow"} id={"62"} />
+              <Space color={"space--yellow"} id={"63"} />
+              <Space color={"space--yellow"} id={"64"} />
+              <Space color={"space--yellow"} id={"65"} />
+              <div className="space empty space--empty" id={"04"}></div>
+            </div>
           </div>
-          <div className="row" id="row_4">
-            <Space color={"space--red"} id={"41"} />
-            <Space color={"empty"} id={"42"} />
-            <Space color={"empty"} id={"43"} />
-            <Space color={"empty"} id={"44"} />
-            <Space color={"empty"} id={"45"} />
-            <Space color={"space--blue"} id={"46"} />
-          </div>
-          <div className="row" id="row_5">
-            <Space color={"space--red"} id={"51"} />
-            <Space color={"empty"} id={"52"} />
-            <Space color={"empty"} id={"53"} />
-            <Space color={"empty"} id={"54"} />
-            <Space color={"empty"} id={"55"} />
-            <Space color={"space--blue"} id={"56"} />
-          </div>
-          <div className="row" id="row_6">
-            <div className="space empty space--empty" id={"03"}></div>
-            <Space color={"space--yellow"} id={"62"} />
-            <Space color={"space--yellow"} id={"63"} />
-            <Space color={"space--yellow"} id={"64"} />
-            <Space color={"space--yellow"} id={"65"} />
-            <div className="space empty space--empty" id={"04"}></div>
+          <div className="opponent_graveyard">
+
           </div>
         </div>
       </BoardContext.Provider>

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, createContext } from "react";
+import React, { useState, useRef, createContext } from "react";
 import Space from "./Space";
 import {knightMoves, bishopMoves, rookMoves, queenMoves, kingMoves, pawnMoves} from "./LegalMoves.js";
 
@@ -6,65 +6,50 @@ export const BoardContext = createContext();
 
 function Board({ game, board, setGames }) {
 
-  const empty = <div className="empty" onClick={clearHighlight} ></div>;
-  const yellow_filter = <img className="filter--yellow" src="./pieces/yellow_filter.png" alt="yellow filter" onClick={movePiece} />;
-  const red_filter = <img className="filter--red" src="./pieces/red_filter.png" alt="red filter" onClick={movePiece} />;
-  const red_pawn = <img className="red pawn" src="./pieces/red_pawn.png" alt="red pawn" onClick={showMoves} />;
-  const green_pawn = <img className="green pawn" src="./pieces/green_pawn.png" alt="green pawn" onClick={showMoves} />;
-  const blue_pawn = <img className="blue pawn" src="./pieces/blue_pawn.png" alt="blue pawn" onClick={showMoves} />;
-  const yellow_pawn = <img className="yellow pawn" src="./pieces/yellow_pawn.png" alt="yellow pawn" onClick={showMoves} />;
-  const red_rook = <img className="red rook" src="./pieces/red_rook.png" alt="red rook" onClick={showMoves} />;
-  const green_rook = <img className="green rook" src="./pieces/green_rook.png" alt="green rook" onClick={showMoves} />;
-  const blue_rook = <img className="blue rook" src="./pieces/blue_rook.png" alt="blue rook" onClick={showMoves} />;
-  const yellow_rook = <img className="yellow rook" src="./pieces/yellow_rook.png" alt="yellow rook" onClick={showMoves} />;
-  const red_knight = <img className="red knight" src="./pieces/red_knight.png" alt="red knight" onClick={showMoves} />;
-  const green_knight = <img className="green knight" src="./pieces/green_knight.png" alt="green knight" onClick={showMoves} />;
-  const blue_knight = <img className="blue knight" src="./pieces/blue_knight.png" alt="blue knight" onClick={showMoves} />;
-  const yellow_knight = <img className="yellow knight" src="./pieces/yellow_knight.png" alt="yellow knight" onClick={showMoves} />;
-  const red_bishop = <img className="red bishop" src="./pieces/red_bishop.png" alt="red bishop" onClick={showMoves} />;
-  const green_bishop = <img className="green bishop" src="./pieces/green_bishop.png" alt="green bishop" onClick={showMoves} />;
-  const blue_bishop = <img className="blue bishop" src="./pieces/blue_bishop.png" alt="blue bishop" onClick={showMoves} />;
-  const yellow_bishop = <img className="yellow bishop" src="./pieces/yellow_bishop.png" alt="yellow bishop" onClick={showMoves} />;
-  const red_queen = <img className="red queen" src="./pieces/red_queen.png" alt="red queen" onClick={showMoves} />;
-  const green_queen = <img className="green queen" src="./pieces/green_queen.png" alt="green queen" onClick={showMoves} />;
-  const blue_queen = <img className="blue queen" src="./pieces/blue_queen.png" alt="blue queen" onClick={showMoves} />;
-  const yellow_queen = <img className="yellow queen" src="./pieces/yellow_queen.png" alt="yellow queen" onClick={showMoves} />;
-  const red_king = <img className="red king" src="./pieces/red_king.png" alt="red king" onClick={showMoves} />;
-  const green_king = <img className="green king" src="./pieces/green_king.png" alt="green king" onClick={showMoves} />;
-  const blue_king = <img className="blue king" src="./pieces/blue_king.png" alt="blue king" onClick={showMoves} />;
-  const yellow_king = <img className="yellow king" src="./pieces/yellow_king.png" alt="yellow king" onClick={showMoves} />;
-
-  const [boardArr, setBoardArr] = useState(convert(board));
+  const [boardArr, _setBoardArr] = useState(convert(board));
   const [isLoaded, setIsLoaded] = useState(true);
-  const [turn, setTurn] = useState("");
-  const [moved, setMoved] = useState(false);
-  const [yellowHighlights, setYellowHighlights] = useState([]);
-  const [redHighlights, setRedHighlights] = useState([]);
+  const [activePiece, setActivePiece] = useState({});
+  const [legalMoves, setLegalMoves] = useState([]);
 
-  let activePiece = " ";
+  const boardStateRef = useRef(boardArr);
+
+  function setBoardArr(data) {
+    _setBoardArr(data);
+    boardStateRef.current = data;
+  };
+
   let hand1 = 101;
   let hand2 = 102;
   let hand3 = 103;
   let hand4 = 104;
   let handcolor = "red";
+  
+  console.log(boardStateRef.current.find(({loc}) => loc === 33));
 
-  /* useEffect(() => {
-    if (game) {
-      initialState()
-    }
-  }, [game]);
-
-  function initialState() {
-    setBoardArr(convert(board));
-    setIsLoaded(true);
-    setMoved(false);
-    handleHand(game);
-  }; */
-
-  function showMoves(e) {
+  function handleClick(e) {
     const spaceId = parseInt(e.target.parentElement.id);
-    const spaceItself = boardArr.find(({loc}) => loc === spaceId)
-    const spaceItselfContents = spaceItself.contents
+    const spaceItself = boardArr.find(({loc}) => loc === spaceId);
+    console.log(boardStateRef.current.find(({loc}) => loc === 33));
+    if (spaceItself.contents.highlight === "highlight--yellow") {
+      console.log("moveit")
+      //movePiece(spaceId);
+      return;
+    } else if (spaceItself.contents.type === "empty") {
+      //clearHighlight();
+      return;
+    } else if (isHand(spaceId) || isBoard(spaceId)) {
+      showMoves(spaceId);
+      return;
+    } else {
+      return;
+    }
+  };
+
+  function showMoves(spaceId) {
+    setLegalMoves([]);
+    const spaceItself = boardArr.find(({loc}) => loc === spaceId);
+    setActivePiece(spaceItself);
+    const spaceItselfContents = spaceItself.contents;
     const pieceColor = spaceItselfContents.color;
     const pieceType = spaceItselfContents.type;
     let moves = "";
@@ -117,27 +102,115 @@ function Board({ game, board, setGames }) {
     highlight(moves, spaceId);
   };
 
-  function movePiece(e) {
+  function movePiece(spaceId) {
+    clearHighlight();
     if ((activePiece.contents.color === game.turn) && (game.phase === "move")) {
-      //populateBoard();
-      const space = parseInt(e.target.parentNode.id);
-      const convertedBoard = convert(board);
-      handleCapture(space, convertedBoard);
-      replaceContents(convertedBoard, activePiece.loc, {img: empty});
-      replaceContents(convertedBoard, space, activePiece.contents)
-      setMoved(true);
-    } else if ((game.phase === "place") && (activePiece.loc === hand1 || activePiece.loc === hand2 || activePiece.loc === hand3 || activePiece.loc === hand4)) {
-      //populateBoard();
-      const space = parseInt(e.target.parentNode.id);
-      const convertedBoard = convert(board);
-      replaceContents(convertedBoard, activePiece.loc, {img: empty});
-      replaceContents(convertedBoard, space, activePiece.contents)
-      setMoved(true);
+      handleCapture(spaceId);
+      replaceContents(activePiece.loc, {type: "empty", img: <div className="empty" onClick={handleClick} ></div>, highlight: "highlight--none"});
+      replaceContents(spaceId, activePiece.contents);
+      confirmMove();
+    } else if ((game.phase === "place") && (isHand(activePiece.loc, game.turn))) {
+      replaceContents(activePiece.loc, {type: "empty", img: <div className="empty" onClick={handleClick} ></div>, highlight: "highlight--none"});
+      replaceContents(spaceId, activePiece.contents);
+      confirmMove();
     } else {
       alert("Sorry, you cannot move that piece right now.");
     }
   };
 
+  async function confirmMove() {
+    if (window.confirm("Confirm move?")) {
+      await submitBoard(board.id, boardArr);
+      await submitGame();
+    } 
+  };
+
+  async function submitBoard(boardId, board) {
+    const res = await fetch(`/boards/${boardId}`, {
+      method: "PATCH",
+      headers: {
+          "Content-Type": "application/json",
+      },
+      body: JSON.stringify(board),
+      });
+    if (res.ok) {
+      const brd = await res.json();
+      setBoardArr(convert(brd));
+    } else {
+      console.log(res.errors);
+    }
+  };
+
+  async function submitGame() {
+    const newGameState = advance();
+    const newGameStatus = calcGameStatus();
+    newGameState.status = newGameStatus;
+    const res = await fetch(`/games/${game.id}`, {
+      method: "PATCH",
+      headers: {
+          "Content-Type": "application/json",
+      },
+      body: JSON.stringify(newGameState),
+      });
+    if (res.ok) {
+      const pkgs = await res.json();
+      setGames(pkgs);
+    } else {
+      console.log(res.errors);
+    }
+  };
+
+  function advance() {
+    if (game.phase === "move") {
+      return {phase: "place"}
+    } else {
+      switch(game.no_players) {
+        case 2: {
+          switch(game.turn) {
+            case "red":
+              return {phase: "move", turn: "blue"};
+            case "blue":
+              return {phase: "move", turn: "red", round: game.round + 1};
+            default:
+              return;
+          };
+        };
+        case 3: {
+          switch(game.turn) {
+            case "red":
+              return {phase: "move", turn: "green"};
+            case "green":
+              return {phase: "move", turn: "blue"};
+            case "blue":
+              return {phase: "move", turn: "red", round: game.round + 1};
+            default:
+              return;
+          };
+        };
+        case 4: {
+          switch(game.turn) {
+            case "red":
+              return {phase: "move", turn: "green"};
+            case "green":
+              return {phase: "move", turn: "blue"};
+            case "blue":
+              return {phase: "move", turn: "yellow"};
+            case "yellow":
+              return {phase: "move", turn: "red", round: game.round + 1};
+            default:
+              return;
+          };
+        };
+        default:
+          return;
+      }
+    }
+  };
+
+  function calcGameStatus() {
+    //when there are x kings in graveyards...
+    return "in progress";
+  }
 
   //CAN BE IMPORTED
   function isHand(spaceId, color) {
@@ -191,6 +264,7 @@ function Board({ game, board, setGames }) {
   function highlight({piece, capture}, active) {
     const yellowBoard = boardArr.filter(({loc}) => piece.includes(loc));
     const redBoard = boardArr.filter(({loc}) => capture.includes(loc));
+    setLegalMoves([...piece, ...capture]);
     const activeBoard = boardArr.find(({loc}) => loc === active);
     const yellowLit = yellowBoard.map((space) => {
       return {...space, contents: {...space.contents, highlight: "highlight--yellow"}}
@@ -205,18 +279,14 @@ function Board({ game, board, setGames }) {
     setBoardArr([...boardArrSansAll, ...redLit, ...yellowLit, activeLit]);
   };
 
-  useEffect(() => {
-    if (moved) {
-      if (window.confirm("Confirm move?")) {
-        if (game.phase === "place") {
-          handleDraw();
-        }
-        submitBoard(unconvert(boardArr));
-      } else {
-        //populateBoard();
-      }
-    }
-  }, [moved]);
+  function replaceContents(space, newContents) {
+    const location = boardArr.find(({loc}) => loc === space);
+    location.contents = newContents;
+    const boardSans = boardArr.filter(({loc}) => loc !== space);
+    setBoardArr([...boardSans, location]);
+  };
+
+
 
   function handleDraw() {
     const hand = boardArr.filter(({loc}) => (loc === hand1 || loc === hand2 || loc === hand3 || loc === hand4));
@@ -243,76 +313,6 @@ function Board({ game, board, setGames }) {
     setBoardArr(newBoard);
   };
 
-  function handleHand(game) {
-    switch(game.turn) {
-      case "red":
-        handcolor = "red";
-        hand1 = 101;
-        hand2 = 102;
-        hand3 = 103;
-        hand4 = 104;
-        break;
-      case "green":
-        handcolor = "green"
-        hand1 = 201;
-        hand2 = 202;
-        hand3 = 203;
-        hand4 = 204;
-        break;
-      case "blue":
-        handcolor = "blue"
-        hand1 = 301;
-        hand2 = 302;
-        hand3 = 303;
-        hand4 = 304;
-        break;
-      case "yellow":
-        handcolor = "yellow"
-        hand1 = 401;
-        hand2 = 402;
-        hand3 = 403;
-        hand4 = 404;
-        break;
-      default:
-        return;
-    }
-  };
-
-  function populateBoard() {
-    setBoardArr(convert(board));
-  }  
-
-  function tempBoard(moves, board) {
-    let boardHolder = board
-    if (moves.piece.length > 0) {
-      moves.piece.map((move) => {
-        const spaceObj = boardHolder.find(({loc}) => loc === move);
-        spaceObj.contents = {img: yellow_filter};
-        const boardSans = boardHolder.filter((obj) => obj.loc !== move);
-        const newBoard = [...boardSans, spaceObj];
-        return boardHolder = newBoard;
-      });
-    }
-    if (moves.capture.length > 0) {
-      moves.capture.map((move) => {
-        const spaceObj = boardHolder.find(({loc}) => loc === move);
-        spaceObj.contents = {img: red_filter};
-        const boardSans = boardHolder.filter((obj) => obj.loc !== move);
-        const newBoard = [...boardSans, spaceObj];
-        return boardHolder = newBoard;
-      });
-    }
-    return boardHolder;
-  };
-
-  
-
-  function replaceContents(board, space, newContents) {
-    const location = board.find(({loc}) => loc === space);
-    location.contents = newContents;
-    const boardSans = board.filter(({loc}) => loc !== space);
-    setBoardArr([...boardSans, location]);
-  }
 
   function handleCapture(space, board) {
     const location = board.find(({loc}) => loc === space);
@@ -322,146 +322,58 @@ function Board({ game, board, setGames }) {
     }
   };
 
-  async function submitBoard(board) {
-    const res = await fetch(`/boards/${board.id}`, {
-      method: "PATCH",
-      headers: {
-          "Content-Type": "application/json",
-      },
-      body: JSON.stringify(board),
-      });
-    if (res.ok) {
-      const brd = await res.json();
-      setBoardArr(convert(brd));
-      submitGame(game, convert(brd));
-    } else {
-      console.log(res.errors);
-    }
-  };
-
-  async function submitGame(game, board) {
-    const newGameState = calcGameState(game);
-    const newGameStatus = calcGameStatus(board);
-    newGameState.status = newGameStatus;
-    const res = await fetch(`/games/${game.id}`, {
-      method: "PATCH",
-      headers: {
-          "Content-Type": "application/json",
-      },
-      body: JSON.stringify(newGameState),
-      });
-    if (res.ok) {
-      const pkg = await res.json();
-      setGames(pkg);
-    } else {
-      console.log(res.errors);
-    }
-  };
-
-  function calcGameState(game) {
-    const noPlayers = game.no_players
-    if (game.phase === "move") {
-      return {phase: "place"}
-    } else {
-      switch(game.no_players) {
-        case 2: {
-          switch(game.turn) {
-            case "red":
-              return {phase: "move", turn: "blue"};
-            case "blue":
-              return {phase: "move", turn: "red", round: game.round + 1};
-            default:
-              return;
-          };
-        };
-        case 3: {
-          switch(game.turn) {
-            case "red":
-              return {phase: "move", turn: "green"};
-            case "green":
-              return {phase: "move", turn: "blue"};
-            case "blue":
-              return {phase: "move", turn: "red", round: game.round + 1};
-            default:
-              return;
-          };
-        };
-        case 4: {
-          switch(game.turn) {
-            case "red":
-              return {phase: "move", turn: "green"};
-            case "green":
-              return {phase: "move", turn: "blue"};
-            case "blue":
-              return {phase: "move", turn: "yellow"};
-            case "yellow":
-              return {phase: "move", turn: "red", round: game.round + 1};
-            default:
-              return;
-          };
-        };
-        default:
-          return;
-      };
-    };
-  };
-
-  function calcGameStatus(board) {
-    return "in progress";
-  }
-
   function pieceConvert(string) {
     switch(string){
       case "rp":
-        return {color: "red", type: "pawn", img: red_pawn, acro: "rp", highlight: "highlight--none"}
+        return {color: "red", type: "pawn", img: <img className="red pawn" src="./pieces/red_pawn.png" alt="red pawn" onClick={handleClick} />, acro: "rp", highlight: "highlight--none"}
       case "gp":
-        return {color: "green", type: "pawn", img: green_pawn, acro: "gp", highlight: "highlight--none"}
+        return {color: "green", type: "pawn", img: <img className="green pawn" src="./pieces/green_pawn.png" alt="green pawn" onClick={handleClick} />, acro: "gp", highlight: "highlight--none"}
       case "bp":
-        return {color: "blue", type: "pawn", img: blue_pawn, acro: "bp", highlight: "highlight--none"}
+        return {color: "blue", type: "pawn", img: <img className="blue pawn" src="./pieces/blue_pawn.png" alt="blue pawn" onClick={handleClick} />, acro: "bp", highlight: "highlight--none"}
       case "yp":
-        return {color: "yellow", type: "pawn", img: yellow_pawn, acro: "yp",highlight: "highlight--none"}
+        return {color: "yellow", type: "pawn", img: <img className="yellow pawn" src="./pieces/yellow_pawn.png" alt="yellow pawn" onClick={handleClick} />, acro: "yp",highlight: "highlight--none"}
       case "rr":
-        return {color: "red", type: "rook", img: red_rook, acro: "rr", highlight: "highlight--none"}
+        return {color: "red", type: "rook", img: <img className="red rook" src="./pieces/red_rook.png" alt="red rook" onClick={handleClick} />, acro: "rr", highlight: "highlight--none"}
       case "gr":
-        return {color: "green", type: "rook", img: green_rook, acro: "gr", highlight: "highlight--none"}
+        return {color: "green", type: "rook", img: <img className="green rook" src="./pieces/green_rook.png" alt="green rook" onClick={handleClick} />, acro: "gr", highlight: "highlight--none"}
       case "br":
-        return {color: "blue", type: "rook", img: blue_rook, acro: "br", highlight: "highlight--none"}
+        return {color: "blue", type: "rook", img: <img className="blue rook" src="./pieces/blue_rook.png" alt="blue rook" onClick={handleClick} />, acro: "br", highlight: "highlight--none"}
       case "yr":
-        return {color: "yellow", type: "rook", img: yellow_rook, acro: "yr", highlight: "highlight--none"}
+        return {color: "yellow", type: "rook", img: <img className="yellow rook" src="./pieces/yellow_rook.png" alt="yellow rook" onClick={handleClick} />, acro: "yr", highlight: "highlight--none"}
       case "rn":
-        return {color: "red", type: "knight", img: red_knight, acro: "rn", highlight: "highlight--none"}
+        return {color: "red", type: "knight", img: <img className="red knight" src="./pieces/red_knight.png" alt="red knight" onClick={handleClick} />, acro: "rn", highlight: "highlight--none"}
       case "gn":
-        return {color: "green", type: "knight", img: green_knight, acro: "gn", highlight: "highlight--none"}
+        return {color: "green", type: "knight", img: <img className="green knight" src="./pieces/green_knight.png" alt="green knight" onClick={handleClick} />, acro: "gn", highlight: "highlight--none"}
       case "bn":
-        return {color: "blue", type: "knight", img: blue_knight, acro: "bn", highlight: "highlight--none"}
+        return {color: "blue", type: "knight", img: <img className="blue knight" src="./pieces/blue_knight.png" alt="blue knight" onClick={handleClick} />, acro: "bn", highlight: "highlight--none"}
       case "yn":
-        return {color: "yellow", type: "knight", img: yellow_knight, acro: "yn", highlight: "highlight--none"}
+        return {color: "yellow", type: "knight", img: <img className="yellow knight" src="./pieces/yellow_knight.png" alt="yellow knight" onClick={handleClick} />, acro: "yn", highlight: "highlight--none"}
       case "rb":
-        return {color: "red", type: "bishop", img: red_bishop, acro: "rb", highlight: "highlight--none"}
+        return {color: "red", type: "bishop", img: <img className="red bishop" src="./pieces/red_bishop.png" alt="red bishop" onClick={handleClick} />, acro: "rb", highlight: "highlight--none"}
       case "gb":
-        return {color: "green", type: "bishop", img: green_bishop, acro: "gb", highlight: "highlight--none"}
+        return {color: "green", type: "bishop", img: <img className="green bishop" src="./pieces/green_bishop.png" alt="green bishop" onClick={handleClick} />, acro: "gb", highlight: "highlight--none"}
       case "bb":
-        return {color: "blue", type: "bishop", img: blue_bishop, acro: "bb", highlight: "highlight--none"}
+        return {color: "blue", type: "bishop", img: <img className="blue bishop" src="./pieces/blue_bishop.png" alt="blue bishop" onClick={handleClick} />, acro: "bb", highlight: "highlight--none"}
       case "yb":
-        return {color: "yellow", type: "bishop", img: yellow_bishop, acro: "yb", highlight: "highlight--none"}
+        return {color: "yellow", type: "bishop", img: <img className="yellow bishop" src="./pieces/yellow_bishop.png" alt="yellow bishop" onClick={handleClick} />, acro: "yb", highlight: "highlight--none"}
       case "rq":
-        return {color: "red", type: "queen", img: red_queen, acro: "rq", highlight: "highlight--none"}
+        return {color: "red", type: "queen", img: <img className="red queen" src="./pieces/red_queen.png" alt="red queen" onClick={handleClick} />, acro: "rq", highlight: "highlight--none"}
       case "gq":
-        return {color: "green", type: "queen", img: green_queen, acro: "gq", highlight: "highlight--none"}
+        return {color: "green", type: "queen", img: <img className="green queen" src="./pieces/green_queen.png" alt="green queen" onClick={handleClick} />, acro: "gq", highlight: "highlight--none"}
       case "bq":
-        return {color: "blue", type: "queen", img: blue_queen, acro: "bq", highlight: "highlight--none"}
+        return {color: "blue", type: "queen", img: <img className="blue queen" src="./pieces/blue_queen.png" alt="blue queen" onClick={handleClick} />, acro: "bq", highlight: "highlight--none"}
       case "yq":
-        return {color: "yellow", type: "queen", img: yellow_queen, acro: "yq", highlight: "highlight--none"}
+        return {color: "yellow", type: "queen", img: <img className="yellow queen" src="./pieces/yellow_queen.png" alt="yellow queen" onClick={handleClick} />, acro: "yq", highlight: "highlight--none"}
       case "rk":
-        return {color: "red", type: "king", img: red_king, acro: "rk", highlight: "highlight--none"}
+        return {color: "red", type: "king", img: <img className="red king" src="./pieces/red_king.png" alt="red king" onClick={handleClick} />, acro: "rk", highlight: "highlight--none"}
       case "gk":
-        return {color: "green", type: "king", img: green_king, acro: "gk", highlight: "highlight--none"}
+        return {color: "green", type: "king", img: <img className="green king" src="./pieces/green_king.png" alt="green king" onClick={handleClick} />, acro: "gk", highlight: "highlight--none"}
       case "bk":
-        return {color: "blue", type: "king", img: blue_king, acro: "bk", highlight: "highlight--none"}
+        return {color: "blue", type: "king", img: <img className="blue king" src="./pieces/blue_king.png" alt="blue king" onClick={handleClick} />, acro: "bk", highlight: "highlight--none"}
       case "yk":
-        return {color: "yellow", type: "king", img: yellow_king, acro: "yk", highlight: "highlight--none"}
+        return {color: "yellow", type: "king", img: <img className="yellow king" src="./pieces/yellow_king.png" alt="yellow king" onClick={handleClick} />, acro: "yk", highlight: "highlight--none"}
       default:
-        return {type: "empty", img: empty, highlight: "highlight--none"};
+        return {type: "empty", img: <div className="empty" onClick={handleClick} ></div>, highlight: "highlight--none"};
     }
   };
   

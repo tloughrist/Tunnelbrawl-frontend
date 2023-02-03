@@ -4,6 +4,8 @@ import { BoardContext } from './Board.js';
 function Space({ color, id }) { 
   
   const board = useContext(BoardContext);
+  //console.log(board)
+
   function findContents(locNum) {
     const obj = board.find(({loc}) => loc === locNum);
     return obj.contents;
@@ -13,7 +15,7 @@ function Space({ color, id }) {
 
   return (
     <div
-      className={`space ${color} + ${occupant?.type} + ${occupant?.acro}`}
+      className={`space ${color} ${occupant.type} ${occupant.acro} ${occupant.highlight}`}
       id={id}
     >
       {occupant.img}

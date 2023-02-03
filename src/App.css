@@ -71,6 +71,27 @@ body {
   display: none;
 }
 
+.highlight--yellow {
+  border: #cfaf23;
+  border-width: 6px;
+  border-style: ridge;
+  box-sizing: border-box;
+}
+
+.highlight--red {
+  border: #a52525;
+  border-width: 6px;
+  border-style: ridge;
+  box-sizing: border-box;
+}
+
+.highlight--none {
+  border: #232323;
+  border-width: 1px;
+  border-style: solid;
+  box-sizing: border-box;
+};
+
 .navlink {
   position: relative;
   display: inline; 
@@ -117,9 +138,6 @@ body {
   width: 79px;
   height: 109px;
   background-color: darkgray;
-  border: #232323;
-  border-width: 1px;
-  border-style: solid;
 }
 
 .space img {

@@ -6,7 +6,7 @@ export const BoardContext = createContext();
 
 function Board({ game, board, setGames }) {
 
-  const empty = <div className="empty" onClick={populateBoard} ></div>;
+  const empty = <div className="empty" onClick={clearHighlight} ></div>;
   const yellow_filter = <img className="filter--yellow" src="./pieces/yellow_filter.png" alt="yellow filter" onClick={movePiece} />;
   const red_filter = <img className="filter--red" src="./pieces/red_filter.png" alt="red filter" onClick={movePiece} />;
   const red_pawn = <img className="red pawn" src="./pieces/red_pawn.png" alt="red pawn" onClick={showMoves} />;
@@ -34,10 +34,12 @@ function Board({ game, board, setGames }) {
   const blue_king = <img className="blue king" src="./pieces/blue_king.png" alt="blue king" onClick={showMoves} />;
   const yellow_king = <img className="yellow king" src="./pieces/yellow_king.png" alt="yellow king" onClick={showMoves} />;
 
-  const [boardArr, setBoardArr] = useState();
-  const [isLoaded, setIsLoaded] = useState(false);
-  const [turn, setTunr] = useState("");
+  const [boardArr, setBoardArr] = useState(convert(board));
+  const [isLoaded, setIsLoaded] = useState(true);
+  const [turn, setTurn] = useState("");
   const [moved, setMoved] = useState(false);
+  const [yellowHighlights, setYellowHighlights] = useState([]);
+  const [redHighlights, setRedHighlights] = useState([]);
 
   let activePiece = "";
   let hand1 = 101;
@@ -46,14 +48,136 @@ function Board({ game, board, setGames }) {
   let hand4 = 104;
   let handcolor = "red";
 
-  useEffect(() => {
+  /* useEffect(() => {
     if (game) {
-      setBoardArr(convert(board));
-      setIsLoaded(true);
-      setMoved(false);
-      handleHand(game)
+      initialState()
     }
   }, [game]);
+
+  function initialState() {
+    setBoardArr(convert(board));
+    setIsLoaded(true);
+    setMoved(false);
+    handleHand(game);
+  }; */
+
+  function showMoves(e) {
+    const spaceId = parseInt(e.target.parentElement.id);
+    const pieceColor = boardArr.find(({loc}) => loc === spaceId).contents.color;
+    const pieceType = boardArr.find(({loc}) => loc === spaceId).contents.type;
+    activePiece = boardArr.find(({loc}) => loc === spaceId);
+    let moves = "";
+    if (isHand(spaceId, pieceColor)) {
+      switch(pieceColor) {
+        case "red":
+          calcVacancies(boardArr, "red")
+          moves = {piece: calcVacancies(boardArr, "red"), capture: []};
+          break;
+        case "green":
+          calcVacancies(boardArr, "green")
+          moves = {piece: calcVacancies(boardArr, "red"), capture: []};
+          break;
+        case "blue":
+          calcVacancies(boardArr, "blue")
+          moves = {piece: calcVacancies(boardArr, "red"), capture: []};
+          break;
+        case "yellow":
+          calcVacancies(boardArr, "yellow")
+          moves = {piece: calcVacancies(boardArr, "red"), capture: []};
+          break;
+        default:
+          return;
+      }
+    } else if (isBoard(spaceId)) {
+      switch(pieceType) {
+        case "pawn":
+          moves = pawnMoves(spaceId, boardArr, pieceColor);
+          break;
+        case "rook":
+          moves = rookMoves(spaceId, boardArr, pieceColor);
+          break;
+        case "knight":
+          moves = knightMoves(spaceId, boardArr, pieceColor);
+          break;
+        case "bishop":
+          moves = bishopMoves(spaceId, boardArr, pieceColor);
+          break;
+        case "queen":
+          moves = queenMoves(spaceId, boardArr, pieceColor);
+          break;
+        case "king":
+          moves = kingMoves(spaceId, boardArr, pieceColor);
+          break;
+        default:
+          return;
+      }
+    };
+    clearHighlight();
+    highlight(moves);
+  };
+
+  //CAN BE IMPORTED
+  function isHand(spaceId, color) {
+    switch(color) {
+      case "red":
+        return spaceId > 100 && spaceId < 105;
+      case "blue":
+        return spaceId > 200 && spaceId < 205;
+      case "green":
+        return spaceId > 300 && spaceId < 305;
+      case "yellow":
+        return spaceId > 400 && spaceId < 405;
+      default:
+        return false;
+    }
+  };
+
+  function isCamp(spaceId, color) {
+    switch(color) {
+      case "red":
+        return spaceId < 100 && spaceId % 10 === 1;
+      case "blue":
+        return spaceId < 100 && spaceId % 10 === 6;
+      case "green":
+        return spaceId > 11 && spaceId < 16;
+      case "yellow":
+        return spaceId > 61 && spaceId < 66;
+      default:
+        return false;
+    }
+  };
+
+  function isBoard(spaceId) {
+    return spaceId > 11 && spaceId < 66
+  };
+
+  function calcVacancies(board, color) {
+    const camp = board.filter(({loc}) => isCamp(parseInt(loc), color));
+    const vacancies = camp.filter(({contents}) => contents.type === "empty");
+    const vacArr = vacancies.map((vac) => parseInt(vac.loc));
+    return vacArr;
+  };
+
+  function clearHighlight() {
+    const clearBoard = boardArr.map((space) => {
+      return {...space, contents: {...space.contents, highlight: "highlight--none"}}
+    })
+    setBoardArr(clearBoard);
+  };
+
+  function highlight({piece, capture}) {
+    const yellowBoard = boardArr.filter(({loc}) => piece.includes(loc));
+    const redBoard = boardArr.filter(({loc}) => capture.includes(loc));
+    const yellowLit = yellowBoard.map((space) => {
+      return {...space, contents: {...space.contents, highlight: "highlight--yellow"}}
+    });
+    const redLit = redBoard.map((space) => {
+      return {...space, contents: {...space.contents, highlight: "highlight--red"}}
+    });
+    const boardArrSansYellow = boardArr.filter(({loc}) => !piece.includes(loc));
+    const boardArrSansYellowRed = boardArrSansYellow.filter(({loc}) => !capture.includes(loc));
+    setBoardArr([...boardArrSansYellowRed, ...redLit, ...yellowLit]);
+  };
 
   useEffect(() => {
     if (moved) {
@@ -63,7 +187,7 @@ function Board({ game, board, setGames }) {
         }
         submitBoard(unconvert(boardArr));
       } else {
-        populateBoard();
+        //populateBoard();
       }
     }
   }, [moved]);
@@ -130,67 +254,7 @@ function Board({ game, board, setGames }) {
 
   function populateBoard() {
     setBoardArr(convert(board));
-  }
-
-  function showMoves(e) { 
-    const color = e.target.classList[0];
-    const type = e.target.classList[1];
-    const space = parseInt(e.target.parentNode.id);
-    const convertedBoard = convert(board);
-    activePiece = convertedBoard.find(({loc}) => loc === space);
-    let moves = "";
-    if ((space % 100 < 5)) {
-      switch(color) {
-          case "red":
-          const redcamp = convertedBoard.filter(({loc}) => ( loc === 21 || loc === 31 || loc === 41 || loc === 51 ));
-          const redmoveUp = redcamp.find((space) => space.contents.img.props.className === "empty");
-          moves = {piece: [redmoveUp?.loc], capture: []};
-          break;
-        case "green":
-          const greencamp = convertedBoard.filter(({loc}) => ( loc > 11 && loc < 16 ));
-          const greenmoveUp = greencamp.find((space) => space.contents.img.props.className === "empty");
-          moves = {piece: [greenmoveUp.loc], capture: []};
-          break;
-        case "blue":
-          const bluecamp = convertedBoard.filter(({loc}) => ( loc === 26 || loc === 36 || loc === 46 || loc === 56 ));
-          const bluemoveUp = bluecamp.find((space) => space.contents.img.props.className === "empty");
-          moves = {piece: [bluemoveUp.loc], capture: []};
-          break;
-        case "yellow":
-          const yellowcamp = convertedBoard.filter(({loc}) => ( loc > 61 && loc < 66 ));
-          const yellowmoveUp = yellowcamp.find((space) => space.contents.img.props.className === "empty");
-          moves = {piece: [yellowmoveUp.loc], capture: []};
-          break;
-        default:
-          return;
-      }
-    } else if (space >= 12 && space <= 65) {
-      switch(type) {
-        case "pawn":
-          moves = pawnMoves(space, convertedBoard, color);
-          break;
-        case "rook":
-          moves = rookMoves(space, convertedBoard, color);
-          break;
-        case "knight":
-          moves = knightMoves(space, convertedBoard, color);
-          break;
-        case "bishop":
-          moves = bishopMoves(space, convertedBoard, color);
-          break;
-        case "queen":
-          moves = queenMoves(space, convertedBoard, color);
-          break;
-        case "king":
-          moves = kingMoves(space, convertedBoard, color);
-          break;
-        default:
-          return;
-      }
-    };
-    populateBoard();
-    setBoardArr(tempBoard(moves, convertedBoard));
-  };
+  }  
 
   function tempBoard(moves, board) {
     let boardHolder = board
@@ -217,7 +281,7 @@ function Board({ game, board, setGames }) {
 
   function movePiece(e) {
     if ((activePiece.contents.color === game.turn) && (game.phase === "move")) {
-      populateBoard();
+      //populateBoard();
       const space = parseInt(e.target.parentNode.id);
       const convertedBoard = convert(board);
       handleCapture(space, convertedBoard);
@@ -225,7 +289,7 @@ function Board({ game, board, setGames }) {
       replaceContents(convertedBoard, space, activePiece.contents)
       setMoved(true);
     } else if ((game.phase === "place") && (activePiece.loc === hand1 || activePiece.loc === hand2 || activePiece.loc === hand3 || activePiece.loc === hand4)) {
-      populateBoard();
+      //populateBoard();
       const space = parseInt(e.target.parentNode.id);
       const convertedBoard = convert(board);
       replaceContents(convertedBoard, activePiece.loc, {img: empty});
@@ -342,55 +406,55 @@ function Board({ game, board, setGames }) {
   function pieceConvert(string) {
     switch(string){
       case "rp":
-        return {color: "red", type: "pawn", img: red_pawn, acro: "rp"}
+        return {color: "red", type: "pawn", img: red_pawn, acro: "rp", highlight: "highlight--none"}
       case "gp":
-        return {color: "green", type: "pawn", img: green_pawn, acro: "gp"}
+        return {color: "green", type: "pawn", img: green_pawn, acro: "gp", highlight: "highlight--none"}
       case "bp":
-        return {color: "blue", type: "pawn", img: blue_pawn, acro: "bp"}
+        return {color: "blue", type: "pawn", img: blue_pawn, acro: "bp", highlight: "highlight--none"}
       case "yp":
-        return {color: "yellow", type: "pawn", img: yellow_pawn, acro: "yp"}
+        return {color: "yellow", type: "pawn", img: yellow_pawn, acro: "yp",highlight: "highlight--none"}
       case "rr":
-        return {color: "red", type: "rook", img: red_rook, acro: "rr"}
+        return {color: "red", type: "rook", img: red_rook, acro: "rr", highlight: "highlight--none"}
       case "gr":
-        return {color: "green", type: "rook", img: green_rook, acro: "gr"}
+        return {color: "green", type: "rook", img: green_rook, acro: "gr", highlight: "highlight--none"}
       case "br":
-        return {color: "blue", type: "rook", img: blue_rook, acro: "br"}
+        return {color: "blue", type: "rook", img: blue_rook, acro: "br", highlight: "highlight--none"}
       case "yr":
-        return {color: "yellow", type: "rook", img: yellow_rook, acro: "yr"}
+        return {color: "yellow", type: "rook", img: yellow_rook, acro: "yr", highlight: "highlight--none"}
       case "rn":
-        return {color: "red", type: "knight", img: red_knight, acro: "rn"}
+        return {color: "red", type: "knight", img: red_knight, acro: "rn", highlight: "highlight--none"}
       case "gn":
-        return {color: "green", type: "knight", img: green_knight, acro: "gn"}
+        return {color: "green", type: "knight", img: green_knight, acro: "gn", highlight: "highlight--none"}
       case "bn":
-        return {color: "blue", type: "knight", img: blue_knight, acro: "bn"}
+        return {color: "blue", type: "knight", img: blue_knight, acro: "bn", highlight: "highlight--none"}
       case "yn":
-        return {color: "yellow", type: "knight", img: yellow_knight, acro: "yn"}
+        return {color: "yellow", type: "knight", img: yellow_knight, acro: "yn", highlight: "highlight--none"}
       case "rb":
-        return {color: "red", type: "bishop", img: red_bishop, acro: "rb"}
+        return {color: "red", type: "bishop", img: red_bishop, acro: "rb", highlight: "highlight--none"}
       case "gb":
-        return {color: "green", type: "bishop", img: green_bishop, acro: "gb"}
+        return {color: "green", type: "bishop", img: green_bishop, acro: "gb", highlight: "highlight--none"}
       case "bb":
-        return {color: "blue", type: "bishop", img: blue_bishop, acro: "bb"}
+        return {color: "blue", type: "bishop", img: blue_bishop, acro: "bb", highlight: "highlight--none"}
       case "yb":
-        return {color: "yellow", type: "bishop", img: yellow_bishop, acro: "yb"}
+        return {color: "yellow", type: "bishop", img: yellow_bishop, acro: "yb", highlight: "highlight--none"}
       case "rq":
-        return {color: "red", type: "queen", img: red_queen, acro: "rq"}
+        return {color: "red", type: "queen", img: red_queen, acro: "rq", highlight: "highlight--none"}
       case "gq":
-        return {color: "green", type: "queen", img: green_queen, acro: "gq"}
+        return {color: "green", type: "queen", img: green_queen, acro: "gq", highlight: "highlight--none"}
       case "bq":
-        return {color: "blue", type: "queen", img: blue_queen, acro: "bq"}
+        return {color: "blue", type: "queen", img: blue_queen, acro: "bq", highlight: "highlight--none"}
       case "yq":
-        return {color: "yellow", type: "queen", img: yellow_queen, acro: "yq"}
+        return {color: "yellow", type: "queen", img: yellow_queen, acro: "yq", highlight: "highlight--none"}
       case "rk":
-        return {color: "red", type: "king", img: red_king, acro: "rk"}
+        return {color: "red", type: "king", img: red_king, acro: "rk", highlight: "highlight--none"}
       case "gk":
-        return {color: "green", type: "king", img: green_king, acro: "gk"}
+        return {color: "green", type: "king", img: green_king, acro: "gk", highlight: "highlight--none"}
       case "bk":
-        return {color: "blue", type: "king", img: blue_king, acro: "bk"}
+        return {color: "blue", type: "king", img: blue_king, acro: "bk", highlight: "highlight--none"}
       case "yk":
-        return {color: "yellow", type: "king", img: yellow_king, acro: "yk"}
+        return {color: "yellow", type: "king", img: yellow_king, acro: "yk", highlight: "highlight--none"}
       default:
-        return {img: empty};
+        return {type: "empty", img: empty, highlight: "highlight--none"};
     }
   };
   
@@ -401,10 +465,6 @@ function Board({ game, board, setGames }) {
         const numLoc = key.substring(3);
         const spaceObj = {loc: parseInt(numLoc), contents: pieceConvert(boardObj[key])};
         convertedBoard.push(spaceObj);
-      } else {
-        const nonSpaceObj = {}
-        nonSpaceObj[key] = boardObj[key];
-        convertedBoard.push(nonSpaceObj);
       }
     });
     return convertedBoard;
@@ -436,9 +496,10 @@ function Board({ game, board, setGames }) {
       body: JSON.stringify({turn: "red", phase: "move", round: 1}),
     });
     if (res.ok) {
-      const pkg = await res.json();
-      setIsLoaded(false);
-      setGames(pkg);
+      const pkgs = await res.json();
+      const newGamePkg = pkgs.find((el) => el.game.id === game.id);
+      setGames(pkgs);
+      setBoardArr(convert(newGamePkg.board));
     } else {
       console.log(res.errors);
     }
@@ -471,7 +532,6 @@ function Board({ game, board, setGames }) {
   };
 
   return (
-    isLoaded ?
       <BoardContext.Provider value={boardArr}>
         <div id="playing_field">
           <div className="buttons_container">
@@ -494,12 +554,12 @@ function Board({ game, board, setGames }) {
           </div> 
           <div className="board"> 
             <div className="row" id="row_1">
-              <div className="space empty space--empty" id={"01"}></div>
+              <div className="space empty space--empty highlight--none" id={"01"}></div>
               <Space color={"space--green"} id={"12"} />
               <Space color={"space--green"} id={"13"} />
               <Space color={"space--green"} id={"14"} />
               <Space color={"space--green"} id={"15"} />
-              <div className="space empty space--empty" id={"02"}></div>
+              <div className="space empty space--empty highlight--none" id={"02"}></div>
             </div>
             <div className="row" id="row_2">
               <Space color={"space--red"} id={"21"} />
@@ -534,12 +594,12 @@ function Board({ game, board, setGames }) {
               <Space color={"space--blue"} id={"56"} />
             </div>
             <div className="row" id="row_6">
-              <div className="space empty space--empty" id={"03"}></div>
+              <div className="space empty space--empty highlight--none" id={"03"}></div>
               <Space color={"space--yellow"} id={"62"} />
               <Space color={"space--yellow"} id={"63"} />
               <Space color={"space--yellow"} id={"64"} />
               <Space color={"space--yellow"} id={"65"} />
-              <div className="space empty space--empty" id={"04"}></div>
+              <div className="space empty space--empty highlight--none" id={"04"}></div>
             </div>
           </div>
           <div className="opponent_graveyard">
@@ -547,9 +607,6 @@ function Board({ game, board, setGames }) {
           </div>
         </div>
       </BoardContext.Provider>
-    : <div>
-        <h3>Loading...</h3>
-      </div>
   );
 };
 

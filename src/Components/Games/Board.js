@@ -41,7 +41,7 @@ function Board({ game, board, setGames }) {
   const [yellowHighlights, setYellowHighlights] = useState([]);
   const [redHighlights, setRedHighlights] = useState([]);
 
-  let activePiece = "";
+  let activePiece = " ";
   let hand1 = 101;
   let hand2 = 102;
   let hand3 = 103;
@@ -63,9 +63,10 @@ function Board({ game, board, setGames }) {
 
   function showMoves(e) {
     const spaceId = parseInt(e.target.parentElement.id);
-    const pieceColor = boardArr.find(({loc}) => loc === spaceId).contents.color;
-    const pieceType = boardArr.find(({loc}) => loc === spaceId).contents.type;
-    activePiece = boardArr.find(({loc}) => loc === spaceId);
+    const spaceItself = boardArr.find(({loc}) => loc === spaceId)
+    const spaceItselfContents = spaceItself.contents
+    const pieceColor = spaceItselfContents.color;
+    const pieceType = spaceItselfContents.type;
     let moves = "";
     if (isHand(spaceId, pieceColor)) {
       switch(pieceColor) {
@@ -113,8 +114,30 @@ function Board({ game, board, setGames }) {
       }
     };
     clearHighlight();
-    highlight(moves);
+    highlight(moves, spaceId);
   };
+
+  function movePiece(e) {
+    if ((activePiece.contents.color === game.turn) && (game.phase === "move")) {
+      //populateBoard();
+      const space = parseInt(e.target.parentNode.id);
+      const convertedBoard = convert(board);
+      handleCapture(space, convertedBoard);
+      replaceContents(convertedBoard, activePiece.loc, {img: empty});
+      replaceContents(convertedBoard, space, activePiece.contents)
+      setMoved(true);
+    } else if ((game.phase === "place") && (activePiece.loc === hand1 || activePiece.loc === hand2 || activePiece.loc === hand3 || activePiece.loc === hand4)) {
+      //populateBoard();
+      const space = parseInt(e.target.parentNode.id);
+      const convertedBoard = convert(board);
+      replaceContents(convertedBoard, activePiece.loc, {img: empty});
+      replaceContents(convertedBoard, space, activePiece.contents)
+      setMoved(true);
+    } else {
+      alert("Sorry, you cannot move that piece right now.");
+    }
+  };
+
 
   //CAN BE IMPORTED
   function isHand(spaceId, color) {
@@ -165,18 +188,21 @@ function Board({ game, board, setGames }) {
     setBoardArr(clearBoard);
   };
 
-  function highlight({piece, capture}) {
+  function highlight({piece, capture}, active) {
     const yellowBoard = boardArr.filter(({loc}) => piece.includes(loc));
     const redBoard = boardArr.filter(({loc}) => capture.includes(loc));
+    const activeBoard = boardArr.find(({loc}) => loc === active);
     const yellowLit = yellowBoard.map((space) => {
       return {...space, contents: {...space.contents, highlight: "highlight--yellow"}}
     });
     const redLit = redBoard.map((space) => {
       return {...space, contents: {...space.contents, highlight: "highlight--red"}}
     });
+    const activeLit = {...activeBoard, contents: {...activeBoard.contents, highlight: "highlight--active"}};
     const boardArrSansYellow = boardArr.filter(({loc}) => !piece.includes(loc));
     const boardArrSansYellowRed = boardArrSansYellow.filter(({loc}) => !capture.includes(loc));
-    setBoardArr([...boardArrSansYellowRed, ...redLit, ...yellowLit]);
+    const boardArrSansAll = boardArrSansYellowRed.filter(({loc}) => loc !== active);
+    setBoardArr([...boardArrSansAll, ...redLit, ...yellowLit, activeLit]);
   };
 
   useEffect(() => {
@@ -279,26 +305,7 @@ function Board({ game, board, setGames }) {
     return boardHolder;
   };
 
-  function movePiece(e) {
-    if ((activePiece.contents.color === game.turn) && (game.phase === "move")) {
-      //populateBoard();
-      const space = parseInt(e.target.parentNode.id);
-      const convertedBoard = convert(board);
-      handleCapture(space, convertedBoard);
-      replaceContents(convertedBoard, activePiece.loc, {img: empty});
-      replaceContents(convertedBoard, space, activePiece.contents)
-      setMoved(true);
-    } else if ((game.phase === "place") && (activePiece.loc === hand1 || activePiece.loc === hand2 || activePiece.loc === hand3 || activePiece.loc === hand4)) {
-      //populateBoard();
-      const space = parseInt(e.target.parentNode.id);
-      const convertedBoard = convert(board);
-      replaceContents(convertedBoard, activePiece.loc, {img: empty});
-      replaceContents(convertedBoard, space, activePiece.contents)
-      setMoved(true);
-    } else {
-      alert("Sorry, you cannot move that piece right now.");
-    }
-  };
+  
 
   function replaceContents(board, space, newContents) {
     const location = board.find(({loc}) => loc === space);

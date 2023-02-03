@@ -71,6 +71,13 @@ body {
   display: none;
 }
 
+.highlight--active {
+  border: #2426c1;
+  border-width: 6px;
+  border-style: ridge;
+  box-sizing: border-box;
+}
+
 .highlight--yellow {
   border: #cfaf23;
   border-width: 6px;

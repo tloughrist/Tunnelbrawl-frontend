@@ -7,37 +7,31 @@ export const BoardContext = createContext();
 function Board({ game, board, setGames }) {
 
   const [boardArr, _setBoardArr] = useState(convert(board));
-  const [isLoaded, setIsLoaded] = useState(true);
-  const [activePiece, setActivePiece] = useState({});
-  const [legalMoves, setLegalMoves] = useState([]);
+  const [activePiece, _setActivePiece] = useState({});
 
   const boardStateRef = useRef(boardArr);
+  const activePieceRef = useRef(activePiece);
 
   function setBoardArr(data) {
     _setBoardArr(data);
     boardStateRef.current = data;
   };
 
-  let hand1 = 101;
-  let hand2 = 102;
-  let hand3 = 103;
-  let hand4 = 104;
-  let handcolor = "red";
-  
-  console.log(boardStateRef.current.find(({loc}) => loc === 33));
+  function setActivePiece(data) {
+    _setActivePiece(data);
+    activePieceRef.current = data;
+  };
 
   function handleClick(e) {
     const spaceId = parseInt(e.target.parentElement.id);
-    const spaceItself = boardArr.find(({loc}) => loc === spaceId);
-    console.log(boardStateRef.current.find(({loc}) => loc === 33));
-    if (spaceItself.contents.highlight === "highlight--yellow") {
-      console.log("moveit")
-      //movePiece(spaceId);
+    const spaceItself = boardStateRef.current.find(({loc}) => loc === spaceId);
+    if (spaceItself.contents.highlight === "highlight--yellow" || spaceItself.contents.highlight === "highlight--red") {
+      movePiece(spaceId);
       return;
     } else if (spaceItself.contents.type === "empty") {
-      //clearHighlight();
+      clearHighlight();
       return;
-    } else if (isHand(spaceId) || isBoard(spaceId)) {
+    } else if (isHand(spaceId, game.turn) || isBoard(spaceId)) {
       showMoves(spaceId);
       return;
     } else {
@@ -46,8 +40,7 @@ function Board({ game, board, setGames }) {
   };
 
   function showMoves(spaceId) {
-    setLegalMoves([]);
-    const spaceItself = boardArr.find(({loc}) => loc === spaceId);
+    const spaceItself = boardStateRef.current.find(({loc}) => loc === spaceId);
     setActivePiece(spaceItself);
     const spaceItselfContents = spaceItself.contents;
     const pieceColor = spaceItselfContents.color;
@@ -56,20 +49,20 @@ function Board({ game, board, setGames }) {
     if (isHand(spaceId, pieceColor)) {
       switch(pieceColor) {
         case "red":
-          calcVacancies(boardArr, "red")
-          moves = {piece: calcVacancies(boardArr, "red"), capture: []};
+          calcVacancies(boardStateRef.current, "red")
+          moves = {piece: calcVacancies(boardStateRef.current, "red"), capture: []};
           break;
         case "green":
-          calcVacancies(boardArr, "green")
-          moves = {piece: calcVacancies(boardArr, "red"), capture: []};
+          calcVacancies(boardStateRef.current, "green")
+          moves = {piece: calcVacancies(boardStateRef.current, "red"), capture: []};
           break;
         case "blue":
-          calcVacancies(boardArr, "blue")
-          moves = {piece: calcVacancies(boardArr, "red"), capture: []};
+          calcVacancies(boardStateRef.current, "blue")
+          moves = {piece: calcVacancies(boardStateRef.current, "red"), capture: []};
           break;
         case "yellow":
-          calcVacancies(boardArr, "yellow")
-          moves = {piece: calcVacancies(boardArr, "red"), capture: []};
+          calcVacancies(boardStateRef.current, "yellow")
+          moves = {piece: calcVacancies(boardStateRef.current, "red"), capture: []};
           break;
         default:
           return;
@@ -77,22 +70,22 @@ function Board({ game, board, setGames }) {
     } else if (isBoard(spaceId)) {
       switch(pieceType) {
         case "pawn":
-          moves = pawnMoves(spaceId, boardArr, pieceColor);
+          moves = pawnMoves(spaceId, boardStateRef.current, pieceColor);
           break;
         case "rook":
-          moves = rookMoves(spaceId, boardArr, pieceColor);
+          moves = rookMoves(spaceId, boardStateRef.current, pieceColor);
           break;
         case "knight":
-          moves = knightMoves(spaceId, boardArr, pieceColor);
+          moves = knightMoves(spaceId, boardStateRef.current, pieceColor);
           break;
         case "bishop":
-          moves = bishopMoves(spaceId, boardArr, pieceColor);
+          moves = bishopMoves(spaceId, boardStateRef.current, pieceColor);
           break;
         case "queen":
-          moves = queenMoves(spaceId, boardArr, pieceColor);
+          moves = queenMoves(spaceId, boardStateRef.current, pieceColor);
           break;
         case "king":
-          moves = kingMoves(spaceId, boardArr, pieceColor);
+          moves = kingMoves(spaceId, boardStateRef.current, pieceColor);
           break;
         default:
           return;
@@ -104,34 +97,50 @@ function Board({ game, board, setGames }) {
 
   function movePiece(spaceId) {
     clearHighlight();
-    if ((activePiece.contents.color === game.turn) && (game.phase === "move")) {
+    if ((activePieceRef.current.contents.color === game.turn) && (game.phase === "move")) {
       handleCapture(spaceId);
-      replaceContents(activePiece.loc, {type: "empty", img: <div className="empty" onClick={handleClick} ></div>, highlight: "highlight--none"});
-      replaceContents(spaceId, activePiece.contents);
-      confirmMove();
-    } else if ((game.phase === "place") && (isHand(activePiece.loc, game.turn))) {
-      replaceContents(activePiece.loc, {type: "empty", img: <div className="empty" onClick={handleClick} ></div>, highlight: "highlight--none"});
-      replaceContents(spaceId, activePiece.contents);
-      confirmMove();
+      replaceContents(activePieceRef.current.loc, {type: "empty", img: <div className="empty" onClick={handleClick} ></div>, highlight: "highlight--none"});
+      replaceContents(spaceId, activePieceRef.current.contents);
+      function undoMove() {
+        replaceContents(spaceId, {type: "empty", img: <div className="empty" onClick={handleClick} ></div>, highlight: "highlight--none"});
+        replaceContents(activePieceRef.current.loc, activePieceRef.current.contents);
+      };
+      confirmMove(undoMove);
+    } else if ((game.phase === "place") && (isHand(activePieceRef.current.loc, game.turn))) {
+      replaceContents(activePieceRef.current.loc, {type: "empty", img: <div className="empty" onClick={handleClick} ></div>, highlight: "highlight--none"});
+      replaceContents(spaceId, activePieceRef.current.contents);
+      function undoPlace() {
+        replaceContents(spaceId, {type: "empty", img: <div className="empty" onClick={handleClick} ></div>, highlight: "highlight--none"});
+        replaceContents(activePieceRef.current.loc, activePieceRef.current.contents);
+      };
+      confirmMove(undoPlace);
     } else {
       alert("Sorry, you cannot move that piece right now.");
     }
   };
 
-  async function confirmMove() {
+  async function confirmMove(undo) {
     if (window.confirm("Confirm move?")) {
-      await submitBoard(board.id, boardArr);
+      await submitBoard(board.id);
       await submitGame();
-    } 
+    } else {
+      clearHighlight();
+      undo();
+    }
   };
 
-  async function submitBoard(boardId, board) {
+  async function submitBoard(boardId) {
+    //const boardState = boardStateRef.current;
+    //const difference = boardState.map((el) => {
+    //  const match = boardArr.find(({loc}) => loc === el.loc);
+    //  el.contents.type !== match.contents.type;
+    //});
     const res = await fetch(`/boards/${boardId}`, {
       method: "PATCH",
       headers: {
           "Content-Type": "application/json",
       },
-      body: JSON.stringify(board),
+      body: JSON.stringify(unconvert(boardStateRef.current)),
       });
     if (res.ok) {
       const brd = await res.json();
@@ -255,17 +264,16 @@ function Board({ game, board, setGames }) {
   };
 
   function clearHighlight() {
-    const clearBoard = boardArr.map((space) => {
+    const clearBoard = boardStateRef.current.map((space) => {
       return {...space, contents: {...space.contents, highlight: "highlight--none"}}
     })
     setBoardArr(clearBoard);
   };
 
   function highlight({piece, capture}, active) {
-    const yellowBoard = boardArr.filter(({loc}) => piece.includes(loc));
-    const redBoard = boardArr.filter(({loc}) => capture.includes(loc));
-    setLegalMoves([...piece, ...capture]);
-    const activeBoard = boardArr.find(({loc}) => loc === active);
+    const yellowBoard = boardStateRef.current.filter(({loc}) => piece.includes(loc));
+    const redBoard = boardStateRef.current.filter(({loc}) => capture.includes(loc));
+    const activeBoard = boardStateRef.current.find(({loc}) => loc === active);
     const yellowLit = yellowBoard.map((space) => {
       return {...space, contents: {...space.contents, highlight: "highlight--yellow"}}
     });
@@ -273,25 +281,25 @@ function Board({ game, board, setGames }) {
       return {...space, contents: {...space.contents, highlight: "highlight--red"}}
     });
     const activeLit = {...activeBoard, contents: {...activeBoard.contents, highlight: "highlight--active"}};
-    const boardArrSansYellow = boardArr.filter(({loc}) => !piece.includes(loc));
+    const boardArrSansYellow = boardStateRef.current.filter(({loc}) => !piece.includes(loc));
     const boardArrSansYellowRed = boardArrSansYellow.filter(({loc}) => !capture.includes(loc));
     const boardArrSansAll = boardArrSansYellowRed.filter(({loc}) => loc !== active);
     setBoardArr([...boardArrSansAll, ...redLit, ...yellowLit, activeLit]);
   };
 
   function replaceContents(space, newContents) {
-    const location = boardArr.find(({loc}) => loc === space);
+    const location = boardStateRef.current.find(({loc}) => loc === space);
     location.contents = newContents;
-    const boardSans = boardArr.filter(({loc}) => loc !== space);
+    const boardSans = boardStateRef.current.filter(({loc}) => loc !== space);
     setBoardArr([...boardSans, location]);
   };
 
 
 
   function handleDraw() {
-    const hand = boardArr.filter(({loc}) => (loc === hand1 || loc === hand2 || loc === hand3 || loc === hand4));
+    const hand = boardStateRef.current.filter(({loc}) => (loc === hand1 || loc === hand2 || loc === hand3 || loc === hand4));
     const emptyHand = hand.find((space) => space.contents.img.props.className === "empty");
-    const deck = boardArr.filter(({loc}) => (loc === hand1 + 10 || loc === hand1 + 11 || loc === hand1 + 12 || loc === hand1 + 13 || loc === hand1 + 14 || loc === hand1 + 14 || loc === hand1 + 15 || loc === hand1 + 17));
+    const deck = boardStateRef.current.filter(({loc}) => (loc === hand1 + 10 || loc === hand1 + 11 || loc === hand1 + 12 || loc === hand1 + 13 || loc === hand1 + 14 || loc === hand1 + 14 || loc === hand1 + 15 || loc === hand1 + 17));
     function draw() {
       let level = 0;
       while (level < 8) {
@@ -308,14 +316,19 @@ function Board({ game, board, setGames }) {
     const handSans = hand.filter(({loc}) => loc !== emptyHand.loc);
     const newHand = [...handSans, emptyHand];
     const replacements = [...newHand, ...deck]
-    const boardSans = boardArr.filter(({loc}) => (loc < hand1 || loc > hand1 + 17));
+    const boardSans = boardStateRef.current.filter(({loc}) => (loc < hand1 || loc > hand1 + 17));
     const newBoard = [...boardSans, ...replacements];
     setBoardArr(newBoard);
   };
 
-
-  function handleCapture(space, board) {
-    const location = board.find(({loc}) => loc === space);
+  let hand1 = 101;
+  let hand2 = 102;
+  let hand3 = 103;
+  let hand4 = 104;
+  let handcolor = "red";
+  
+  function handleCapture(space) {
+    const location = boardStateRef.current.find(({loc}) => loc === space);
     const isOpponent = (location.contents.color !== game.turn);
     if (isOpponent) {
       console.log("move piece to graveyard and update boardArr state");
@@ -399,7 +412,6 @@ function Board({ game, board, setGames }) {
     });
     if (res.ok) {
       const pkg = await res.json();
-      setIsLoaded(false);
       setGames(pkg);
     } else {
       console.log(res.errors);

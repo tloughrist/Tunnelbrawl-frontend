@@ -1,17 +1,24 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useEffect, useContext, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import Board from "./Board.js";
 import { LoggedInContext, UserContext } from '../../App';
 
 function Games() {
   
-  const [games, setGames] = useState([]);
+  const [games, _setGames] = useState([]);
   const [isLoaded, setIsLoaded] = useState(false);
 
   const isLoggedIn = useContext(LoggedInContext);
   const user = useContext(UserContext);
 
   const navigate = useNavigate();
+
+  const gamesRef = useRef(games);
+
+  function setGames(data) {
+    _setGames(data);
+    gamesRef.current = data;
+  };
 
   useEffect(() => {
     if (user) {
@@ -42,7 +49,7 @@ function Games() {
       {
         isLoaded ?
           <div className="game_container">
-            <Board game={games[0].game} board={games[0].board} setGames={setGames} />
+            <Board game={gamesRef.current[0].game} board={gamesRef.current[0].board} setGames={setGames} />
           </div>
         : <h3>Loading...</h3>
       } 

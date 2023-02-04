@@ -79,42 +79,40 @@ body {
 
 .highlight--active {
   border: rgb(69, 69, 69, .7);
-  border-width: 3px;
+  border-width: 1px;
   border-style: solid;
-  box-shadow: inset 0px 0px 0px 10px rgb(255, 255, 255);
   box-sizing: border-box;
-  animation-name: blinking;
-  animation-duration: .75s;
+  animation-name: active-blinking;
+  animation-duration: 2s;
   animation-iteration-count: infinite;
 }
 
-@keyframes blinking {
+@keyframes active-blinking {
   50% {
-    box-shadow: inset 0px 0px 0px 10px rgb(255, 255, 255, 0);
-    border: rgb(255, 255, 255) 7px inset;
+    border: rgb(255, 255, 255) 10px inset;
   }
 }
 
 .highlight--yellow {
-  border: rgb(69, 69, 69, .7);
-  border-width: 1px;
-  border-style: solid;
+  border: rgb(255, 255, 255) 10px inset;
   box-shadow: inset 0px 0px 5px 10px rgb(255, 208, 0, 0);
   box-sizing: border-box;
-  animation-name: blinking;
-  animation-duration: 2s;
-  animation-iteration-count: infinite;
 }
 
 .highlight--red {
   border: rgb(69, 69, 69, .7);
   border-width: 1px;
   border-style: solid;
-  box-shadow: inset 0px 0px 0px 10px rgb(255, 0, 0, .7);
   box-sizing: border-box;
-  animation-name: blinking;
+  animation-name: capture-blinking;
   animation-duration: 2s;
   animation-iteration-count: infinite;
+}
+
+@keyframes capture-blinking {
+  50% {
+    border: rgb(148, 19, 19) 10px inset;
+  }
 }
 
 .highlight--none {

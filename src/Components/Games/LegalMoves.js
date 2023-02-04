@@ -136,18 +136,18 @@ function pawnMoves(start, board, color) {
       step(start, 10, piece, board, blocking, color);
       if (firstMove) {
         slide(start, 1, piece, board, blocking, color, 1)
-        if (opponent(start - 8, board, color)) {
-          capturing.push((start - 8));
-        }
-        if (opponent((start + 12), board, color)) {
-          capturing.push((start + 12));
-        }
-      }
+      } 
       if (opponent(start - 9, board, color)) {
         capturing.push((start - 9));
       }
       if (opponent((start + 11), board, color)) {
         capturing.push((start + 11));
+      }
+      if (opponent(start - 11, board, color)) {
+        capturing.push((start - 11));
+      }
+      if (opponent((start + 9), board, color)) {
+        capturing.push((start + 9));
       }
       return {piece: piece, blocks: blocking, capture: capturing}
     case "blue":
@@ -156,18 +156,18 @@ function pawnMoves(start, board, color) {
       step(start, 10, piece, board, blocking, color);
       if (firstMove) {
         slide(start, -Math.abs(1), piece, board, blocking, color, 1)
-        if (opponent(start - 12, board, color)) {
-          capturing.push((start - 12));
-        }
-        if (opponent((start + 8), board, color)) {
-          capturing.push((start + 8));
-        }
       }
       if (opponent(start - 11, board, color)) {
         capturing.push(start - 11);
       }
       if (opponent((start + 9), board, color)) {
         capturing.push((start + 9));
+      }
+      if (opponent(start + 11, board, color)) {
+        capturing.push(start + 11);
+      }
+      if (opponent((start - 9), board, color)) {
+        capturing.push((start - 9));
       }
       return {piece: piece, blocks: blocking, capture: capturing}
     case "green":
@@ -176,18 +176,18 @@ function pawnMoves(start, board, color) {
       step(start, 1, piece, board, blocking, color);
       if (firstMove) {
         slide(start, 10, piece, board, blocking, color, 1)
-        if (opponent(start + 19, board, color)) {
-          capturing.push((start + 19));
-        }
-        if (opponent((start + 21), board, color)) {
-          capturing.push((start + 21));
-        }
       }
       if (opponent((start + 9), board, color)) {
         capturing.push((start + 9));
       }
       if (opponent((start + 11), board, color)) {
         capturing.push((start + 11));
+      }
+      if (opponent((start - 9), board, color)) {
+        capturing.push((start - 9));
+      }
+      if (opponent((start - 11), board, color)) {
+        capturing.push((start - 11));
       }
       return {piece: piece, blocks: blocking, capture: capturing}
     case "yellow":
@@ -196,18 +196,18 @@ function pawnMoves(start, board, color) {
       step(start, 1, piece, board, blocking, color);
       if (firstMove) {
         slide(start, -Math.abs(10), piece, board, blocking, color, 1)
-        if (opponent(start - 19, board, color)) {
-          capturing.push((start - 19));
-        }
-        if (opponent((start - 21), board, color)) {
-          capturing.push((start - 21));
-        }
       }
       if (opponent(start - 9, board, color)) {
         capturing.push(start - 9);
       }
       if (opponent(start - 11, board, color)) {
         capturing.push(start - 11);
+      }
+      if (opponent((start + 9), board, color)) {
+        capturing.push((start + 9));
+      }
+      if (opponent((start + 11), board, color)) {
+        capturing.push((start + 11));
       }
       return {piece: piece, blocks: blocking, capture: capturing}
   };

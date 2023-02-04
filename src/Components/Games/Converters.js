@@ -53,7 +53,7 @@ function pieceConvert(string, click) {
   }
 };
 
-function convert(boardObj, click) {
+export function convert(boardObj, click) {
   const convertedBoard = [];
   Object.keys(boardObj).forEach((key) => {
     if (key.includes('loc')) {
@@ -65,7 +65,7 @@ function convert(boardObj, click) {
   return convertedBoard;
 };
 
-function unconvert(boardArr) {
+export function unconvert(boardArr) {
   const unconvertedBoard = {};
   const spaceObjs = boardArr.filter((obj) => Object.keys(obj).includes('loc'));
   const nonSpaceObjs = boardArr.filter((obj) => !Object.keys(obj).includes('loc'));

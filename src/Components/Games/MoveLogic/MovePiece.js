@@ -1,4 +1,4 @@
-import {isHand} from "./Checkers.js";
+import {isHand} from "../Checkers.js";
 
 export default function movePiece(spaceId, clearHighlight, activePiece, game, handleClick, confirmMove, handleCapture, replaceContents, board) {
   clearHighlight();

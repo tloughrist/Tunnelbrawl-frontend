@@ -1,10 +1,10 @@
 import React, {useContext} from 'react';
-import { BoardContext } from './Board.js';
+import { BoardContext } from '../Game.js';
 
-function Space({ color, id }) { 
-  
+export default function Space({ color, id }) { 
+
   const board = useContext(BoardContext);
-
+  
   function findContents(locNum) {
     const obj = board.find(({loc}) => loc === locNum);
     return obj.contents;
@@ -21,5 +21,3 @@ function Space({ color, id }) {
     </div>
   );
 };
-
-export default Space;

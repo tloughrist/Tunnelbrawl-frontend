@@ -3,17 +3,21 @@ import Space from "./Space";
 import showMoves from "./ShowMoves.js";
 import movePiece from "./MovePiece.js";
 import {convert, unconvert} from "./Converters.js";
-import {isHand, isBoard} from "./Checkers.js";
+import {isHand, isBoard, isDeck, handSpaces, deckSpaces, campSpaces, isLocked} from "./Checkers.js";
+import {deal} from "./Dealers.js";
+import advance from "./Advance.js";
 
 export const BoardContext = createContext();
 
-function Board({ game, board, setGames }) {
+function Board({ gameInit, boardInit, setGames }) {
 
-  const [boardArr, _setBoardArr] = useState(convert(board, handleClick));
+  const [boardArr, _setBoardArr] = useState(convert(boardInit, handleClick));
   const [activePiece, _setActivePiece] = useState({});
+  const [game, _setGame] = useState(gameInit);
 
   const boardStateRef = useRef(boardArr);
   const activePieceRef = useRef(activePiece);
+  const gameRef = useRef(game);
 
   function setBoardArr(data) {
     _setBoardArr(data);
@@ -25,16 +29,21 @@ function Board({ game, board, setGames }) {
     activePieceRef.current = data;
   };
 
+  function setGame(data) {
+    _setGame(data);
+    gameRef.current = data;
+  };
+
   function handleClick(e) {
     const spaceId = parseInt(e.target.parentElement.id);
     const spaceItself = boardStateRef.current.find(({loc}) => loc === spaceId);
     if (spaceItself.contents.highlight === "highlight--yellow" || spaceItself.contents.highlight === "highlight--red") {
-      movePiece(spaceId, clearHighlight, activePieceRef.current, game, handleClick, confirmMove, handleCapture, replaceContents);
+      movePiece(spaceId, clearHighlight, activePieceRef.current, gameRef.current, handleClick, confirmMove, handleCapture, replaceContents, boardStateRef.current);
       return;
     } else if (spaceItself.contents.type === "empty") {
       clearHighlight();
       return;
-    } else if (isHand(spaceId, game.turn) || isBoard(spaceId)) {
+    } else if (isHand(spaceId, gameRef.current.turn) || isBoard(spaceId)) {
       showMoves(boardStateRef.current, spaceId, clearHighlight, highlight, setActivePiece);
       return;
     } else {
@@ -44,7 +53,7 @@ function Board({ game, board, setGames }) {
 
   function handleCapture(space) {
     const location = boardStateRef.current.find(({loc}) => loc === space);
-    const isOpponent = (location.contents.color !== game.turn);
+    const isOpponent = (location.contents.color !== gameRef.current.turn);
     if (isOpponent) {
       console.log("move piece to graveyard and update boardArr state");
     }
@@ -54,12 +63,14 @@ function Board({ game, board, setGames }) {
     const location = boardStateRef.current.find(({loc}) => loc === space);
     location.contents = newContents;
     const boardSans = boardStateRef.current.filter(({loc}) => loc !== space);
+    console.log(space)
+    console.log([location])
     setBoardArr([...boardSans, location]);
   };
 
   async function confirmMove(undo) {
     if (window.confirm("Confirm move?")) {
-      await submitBoard(board.id);
+      await submitBoard(boardInit.id);
       await submitGame();
     } else {
       clearHighlight();
@@ -84,10 +95,10 @@ function Board({ game, board, setGames }) {
   };
 
   async function submitGame() {
-    const newGameState = advance();
+    const newGameState = advance(boardStateRef.current , gameRef.current);
     const newGameStatus = calcGameStatus();
     newGameState.status = newGameStatus;
-    const res = await fetch(`/games/${game.id}`, {
+    const res = await fetch(`/games/${gameRef.current.id}`, {
       method: "PATCH",
       headers: {
           "Content-Type": "application/json",
@@ -97,55 +108,18 @@ function Board({ game, board, setGames }) {
     if (res.ok) {
       const pkgs = await res.json();
       setGames(pkgs);
+      const newGamePkg = pkgs.find(({game_id}) => game_id = gameRef.current.id);
+      const currentColor = gameRef.current.turn;
+      setGame(newGamePkg.game);
+      setBoardArr(convert(newGamePkg.board, handleClick));
+      if (isLocked(gameRef.current.turn, boardStateRef.current)) {
+        alert(`${gameRef.current.turn} is locked. Turn is forfeited.`);
+        submitGame();
+      } else if (newGameState.phase === "move") {
+        handleDraw(boardStateRef.current, currentColor, setBoardArr);
+      }
     } else {
       console.log(res.errors);
-    }
-  };
-
-  function advance() {
-    if (game.phase === "move") {
-      return {phase: "place"}
-    } else {
-      switch(game.no_players) {
-        case 2: {
-          switch(game.turn) {
-            case "red":
-              return {phase: "move", turn: "blue"};
-            case "blue":
-              return {phase: "move", turn: "red", round: game.round + 1};
-            default:
-              return;
-          };
-        };
-        case 3: {
-          switch(game.turn) {
-            case "red":
-              return {phase: "move", turn: "green"};
-            case "green":
-              return {phase: "move", turn: "blue"};
-            case "blue":
-              return {phase: "move", turn: "red", round: game.round + 1};
-            default:
-              return;
-          };
-        };
-        case 4: {
-          switch(game.turn) {
-            case "red":
-              return {phase: "move", turn: "green"};
-            case "green":
-              return {phase: "move", turn: "blue"};
-            case "blue":
-              return {phase: "move", turn: "yellow"};
-            case "yellow":
-              return {phase: "move", turn: "red", round: game.round + 1};
-            default:
-              return;
-          };
-        };
-        default:
-          return;
-      }
     }
   };
 
@@ -178,18 +152,20 @@ function Board({ game, board, setGames }) {
     setBoardArr([...boardArrSansAll, ...redLit, ...yellowLit, activeLit]);
   };
 
-  function handleDraw() {
-    const hand = boardStateRef.current.filter(({loc}) => (loc === hand1 || loc === hand2 || loc === hand3 || loc === hand4));
-    const emptyHand = hand.find((space) => space.contents.img.props.className === "empty");
-    const deck = boardStateRef.current.filter(({loc}) => (loc === hand1 + 10 || loc === hand1 + 11 || loc === hand1 + 12 || loc === hand1 + 13 || loc === hand1 + 14 || loc === hand1 + 14 || loc === hand1 + 15 || loc === hand1 + 17));
+  function handleDraw(boardState, color, setBoard) {
+    const hand = deal(boardState, color, isHand);
+    console.log(hand)
+    const emptyHand = hand.find((space) => space.contents.type === "empty");
+    const deck = deal(boardState, color, isDeck);
     function draw() {
       let level = 0;
       while (level < 8) {
-        if (deck[level] === null) {
+        if (deck[level].contents.type === "empty") {
           level += 1;
         } else {
+          console.log(emptyHand)
           emptyHand.contents = deck[level].contents;
-          deck[level] = null;
+          deck[level].contents = {type: "empty"};
           break;
         }
       }
@@ -198,16 +174,13 @@ function Board({ game, board, setGames }) {
     const handSans = hand.filter(({loc}) => loc !== emptyHand.loc);
     const newHand = [...handSans, emptyHand];
     const replacements = [...newHand, ...deck]
-    const boardSans = boardStateRef.current.filter(({loc}) => (loc < hand1 || loc > hand1 + 17));
+    const boardSans = boardStateRef.current.filter(({loc}) => {
+      const replaceLocs = replacements.map((card) => card.loc);
+      return !replaceLocs.includes(loc);
+    });
     const newBoard = [...boardSans, ...replacements];
-    setBoardArr(newBoard);
+    setBoard(newBoard);
   };
-
-  let hand1 = 101;
-  let hand2 = 102;
-  let hand3 = 103;
-  let hand4 = 104;
-  let handcolor = "red";
   
   async function startGame(gameId) {
     const res = await fetch(`/games/initialize/${gameId}`, {
@@ -235,7 +208,7 @@ function Board({ game, board, setGames }) {
     });
     if (res.ok) {
       const pkgs = await res.json();
-      const newGamePkg = pkgs.find((el) => el.game.id === game.id);
+      const newGamePkg = pkgs.find((el) => el.game.id === gameId);
       setGames(pkgs);
       setBoardArr(convert(newGamePkg.board, handleClick));
     } else {
@@ -244,21 +217,21 @@ function Board({ game, board, setGames }) {
   };
 
   return (
-      <BoardContext.Provider value={boardArr}>
+      <BoardContext.Provider value={boardStateRef.current}>
         <div id="playing_field">
           <div className="buttons_container">
             {
-              game.status === "pending" ?
-                <button id="start_game" onClick={(e) => startGame(game.id)}>Start Game</button>
-              : <button id="reset_game" onClick={(e) => resetGame(game.id)}>Reset Game</button>
+              gameRef.current.status === "pending" ?
+                <button id="start_game" onClick={(e) => startGame(gameRef.current.id)}>Start Game</button>
+              : <button id="reset_game" onClick={(e) => resetGame(gameRef.current.id)}>Reset Game</button>
             }
           </div>
           <div id="hand">
             <div className="row" id="row_0">
-              <Space color={`space--${handcolor}`} id={hand1} />
-              <Space color={`space--${handcolor}`} id={hand2} />
-              <Space color={`space--${handcolor}`} id={hand3} />
-              <Space color={`space--${handcolor}`} id={hand4} />
+              <Space color={`space--${gameRef.current.turn}`} id={handSpaces(gameRef.current.turn)[0]} />
+              <Space color={`space--${gameRef.current.turn}`} id={handSpaces(gameRef.current.turn)[1]} />
+              <Space color={`space--${gameRef.current.turn}`} id={handSpaces(gameRef.current.turn)[2]} />
+              <Space color={`space--${gameRef.current.turn}`} id={handSpaces(gameRef.current.turn)[3]} />
             </div>
           </div>
           <div className="player_graveyard">

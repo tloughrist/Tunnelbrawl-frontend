@@ -1,5 +1,4 @@
 import { convert } from '../Converters.js';
-import handleClick from '../MoveLogic/HandleClick.js';
 
 export async function startGame(gameId, setGame, setBoard) {
 
@@ -13,7 +12,7 @@ export async function startGame(gameId, setGame, setBoard) {
   if (res.ok) {
     const pkg = await res.json();
     setGame(pkg.game);
-    setBoard(convert(pkg.board, handleClick));
+    setBoard(pkg.board);
   } else {
     console.log(res.errors);
   }

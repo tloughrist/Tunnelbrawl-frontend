@@ -22,7 +22,7 @@ function occupied(space, boardObj) {
 function opponent(space, boardObj, color) {
   if (occupied(space, boardObj)) {
     const obj = boardObj.find(({loc}) => loc === space);
-    const contents = obj.contents.img.props.className;
+    const contents = obj.contents.img.props.type;
     const opp = contents.includes(color) ? false : true;
     return opp;
   }
@@ -51,7 +51,7 @@ function step(init, displacement, array, board, altArray, color) {
   }
 };
 
-function bishopMoves(start, board, color) {
+export function bishopMoves(start, board, color) {
   const piece = [];
   const opponents = [];
 
@@ -63,7 +63,7 @@ function bishopMoves(start, board, color) {
   return {piece: piece, capture: opponents};
 };
 
-function rookMoves(start, board, color) {
+export function rookMoves(start, board, color) {
   const piece = [];
   const opponents = [];
 
@@ -75,7 +75,7 @@ function rookMoves(start, board, color) {
   return {piece: piece, capture: opponents};
 };
 
-function queenMoves(start, board, color) {
+export function queenMoves(start, board, color) {
   const piece = [];
   const opponents = [];
 
@@ -91,7 +91,7 @@ function queenMoves(start, board, color) {
   return {piece: piece, capture: opponents};
 };
 
-function knightMoves(start, board, color) {
+export function knightMoves(start, board, color) {
   const piece = [];
   const opponents = [];
 
@@ -107,7 +107,7 @@ function knightMoves(start, board, color) {
   return {piece: piece, capture: opponents};
 };
 
-function kingMoves(start, board, color) {
+export function kingMoves(start, board, color) {
   const piece = [];
   const opponents = [];
 
@@ -123,7 +123,7 @@ function kingMoves(start, board, color) {
   return {piece: piece, capture: opponents};
 };
 
-function pawnMoves(start, board, color) {
+export function pawnMoves(start, board, color) {
   const piece = [];
   const blocking = [];
   const capturing = [];
@@ -212,5 +212,3 @@ function pawnMoves(start, board, color) {
       return {piece: piece, blocks: blocking, capture: capturing}
   };
 };
-
-export {knightMoves, bishopMoves, rookMoves, queenMoves, kingMoves, pawnMoves};

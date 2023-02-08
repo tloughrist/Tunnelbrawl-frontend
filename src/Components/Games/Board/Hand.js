@@ -3,7 +3,7 @@ import Space from './Space.js';
 import { handSpaces } from '../Checkers.js';
 import { ColorContext } from '../Game.js';
 
-export default function Hand() {
+export default function Hand({ setBoard }) {
 
   const color = useContext(ColorContext);
 
@@ -15,10 +15,10 @@ export default function Hand() {
         </div>
       </div>
       <div className="row" id="hand">
-        <Space color={`space--${color}`} id={handSpaces(color)[0]} />
-        <Space color={`space--${color}`} id={handSpaces(color)[1]} />
-        <Space color={`space--${color}`} id={handSpaces(color)[2]} />
-        <Space color={`space--${color}`} id={handSpaces(color)[3]} />
+        <Space color={`space--${color}`} id={handSpaces(color)[0]} setBoard={setBoard} />
+        <Space color={`space--${color}`} id={handSpaces(color)[1]} setBoard={setBoard} />
+        <Space color={`space--${color}`} id={handSpaces(color)[2]} setBoard={setBoard} />
+        <Space color={`space--${color}`} id={handSpaces(color)[3]} setBoard={setBoard} />
       </div>
     </div>
 

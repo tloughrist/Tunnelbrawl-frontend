@@ -8,7 +8,7 @@ export default function GuestButtons({gameData}) {
 
   return (
     <div>
-      <button onClick={(e) => leaveGame(gameData, user.id)}>Leave Game</button>
+      <button onClick={leaveGame}>Leave Game</button>
       <button>Message Players</button>
     </div>
   );

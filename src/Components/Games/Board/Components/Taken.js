@@ -1,6 +1,6 @@
 import React from "react";
 
-export default function Taken({ setBoard={setBoard} }) {
+export default function Taken({ }) {
 
   return (
     <div>

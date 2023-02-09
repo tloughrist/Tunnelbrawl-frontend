@@ -1,7 +1,7 @@
-import advance from '../Advance.js';
-import { convert } from '../Converters.js';
-import { isLocked } from '../Checkers.js';
-import handleDraw from '../Draw.js';
+import advance from '../Helpers/Advance.js';
+import { convert } from '../Helpers/Converters.js';
+import { isLocked } from '../Helpers/Checkers.js';
+import handleDraw from '../Helpers/Draw.js';
 
 export default async function submitGame(board, game, setGames, setGame, setBoard, ) {
   const newGameState = advance(board, game);

@@ -2,9 +2,8 @@ import React, { useState, useEffect, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import Game from './Game.js';
 import GameOptions from './GameOptions.js';
-import fetchGames from './Fetching/FetchGames.js';
 import NewGame from './NewGame.js';
-
+import fetchGames from './Fetching/FetchGames.js';
 import { LoggedInContext, UserContext } from '../../App';
 
 function Games() {

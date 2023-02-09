@@ -1,5 +1,5 @@
 import {knightMoves, bishopMoves, rookMoves, queenMoves, kingMoves, pawnMoves} from "./LegalMoves.js";
-import {isCamp, isHand, isBoard} from "./Checkers.js";
+import {isCamp, isHand, isBoard} from "./Helpers/Checkers.js";
 
 export default function showMoves(boardState, spaceId, clearHighlight, highlight, setActivePiece) {
   const spaceItself = boardState.find(({loc}) => loc === spaceId);

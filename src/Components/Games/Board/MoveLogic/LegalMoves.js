@@ -1,4 +1,4 @@
-import { isCamp } from "../Checkers";
+import { isCamp } from "../../Helpers/Checkers";
 
 function inBounds(number) {
   if ((number > 11 && number < 16) || (number > 20 && number < 27) || (number > 30 && number < 37) || (number > 40 && number < 47) || (number > 50 && number < 57) || (number > 60 && number < 67)) {
@@ -12,8 +12,9 @@ function occupied(space, boardObj) {
   if (inBounds(space)) {
     const obj = boardObj.find(({loc}) => loc === space);
     if (obj) {
-      const contents = obj.contents.img.props.className;
-      const occ = contents === "empty" ? false : true;
+      console.log(obj)
+      const contents = obj.contents;
+      const occ = contents.type === "empty" ? false : true;
       return occ;
     }
   }

@@ -2,10 +2,10 @@ import React, { useState, useRef, createContext } from "react";
 import Space from "./Space";
 import showMoves from "./ShowMoves.js";
 import movePiece from "./MovePiece.js";
-import {convert, unconvert} from "./Converters.js";
-import {isHand, isBoard, isDeck, handSpaces, deckSpaces, campSpaces, isLocked} from "./Checkers.js";
+import {convert, unconvert} from "./Helpers/Converters.js";
+import {isHand, isBoard, isDeck, handSpaces, deckSpaces, campSpaces, isLocked} from "./Helpers/Checkers.js";
 import {deal} from "./Dealers.js";
-import advance from "./Advance.js";
+import advance from "./Helpers/Advance.js";
 
 export const BoardContext = createContext();
 

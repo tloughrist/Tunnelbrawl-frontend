@@ -1,4 +1,4 @@
-import { convert } from '../Converters.js';
+import { convert } from '../Helpers/Converters.js';
 
 export async function startGame(gameId, setGame, setBoard) {
 

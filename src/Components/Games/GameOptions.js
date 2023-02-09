@@ -1,7 +1,7 @@
-import React, { useState, useContext, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import moment from 'moment';
 
-export default function GameOptions({game, selectedGame, setSelectedGame}) {
+export default function GameOptions({ game, selectedGame }) {
 
   const [isSelected, setIsSelected] = useState(false);
 

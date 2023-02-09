@@ -1,7 +1,7 @@
 import React, { useContext } from "react";
 import Space from './Space.js';
-import { handSpaces } from '../Checkers.js';
-import { ColorContext } from '../Game.js';
+import { handSpaces } from '../../Helpers/Checkers.js';
+import { ColorContext } from '../../Game.js';
 
 export default function Hand({ setBoard }) {
 

@@ -1,10 +1,10 @@
 import React, { createContext, useContext, useEffect, useState, useRef } from "react";
-import { UserContext } from '../../App';
 import HostButtonsMid from './GameControls/HostBtnsMid.js';
 import HostButtonsBegin from './GameControls/HostBtnsBegin.js';
 import GuestButtons from './GameControls/GuestBtns.js';
-import PlayingField from './Board/PlayingField.js';
-import { convert } from './Converters.js';
+import PlayingField from './Board/Components/PlayingField.js';
+import { UserContext } from '../../App.js';
+import { convert } from './Helpers/Converters.js';
 
 export const GameContext = createContext();
 export const BoardContext = createContext();
@@ -18,7 +18,7 @@ export default function Game({gamePkg}) {
   const user = useContext(UserContext);
 
   const [game, _setGame] = useState(gamePkg.game);
-  const [board, _setBoard] = useState(gamePkg.board);
+  const [board, _setBoard] = useState(convert(gamePkg.board, setBoard));
   const [color, _setColor] = useState(gamePkg.game.players.find(({user_id}) => user_id === user.id).color);
 
   const gameRef = useRef(game);
@@ -43,7 +43,7 @@ export default function Game({gamePkg}) {
   useEffect(() => {
     if (Object.keys(gamePkg).length > 0) {
       setGame(gamePkg.game);
-      setBoard(gamePkg.board);
+      setBoard(convert(gamePkg.board, setBoard));
       setBoardId(gamePkg.board.id)
       setColor(gamePkg.game.players.find(({user_id}) => user_id === user.id).color);
     }

@@ -1,4 +1,4 @@
-import { isCamp } from "./Checkers";
+import { isCamp } from "./Helpers/Checkers";
 
 function inBounds(number) {
   if ((number > 11 && number < 16) || (number > 20 && number < 27) || (number > 30 && number < 37) || (number > 40 && number < 47) || (number > 50 && number < 57) || (number > 60 && number < 67)) {

@@ -1,5 +1,5 @@
 import './App.css';
-import React, { createContext, useState, useEffect } from "react";
+import React, { createContext, useState, useEffect, useRef } from "react";
 import { Route, Routes, Navigate, useNavigate } from "react-router-dom";
 import Banner from "./Components/Banner/Banner.js";
 import Games from "./Components/Games/Games.js";
@@ -20,12 +20,17 @@ export { LoggedInContext, UserContext, FriendsContext };
 function App() {
 
   const [isLoggedIn, setIsLoggedIn] = useState("unchecked");
-  const [user, setUser] = useState();
+  const [user, _setUser] = useState({});
   const [friends, setFriends] = useState([]);
   const [logNav, setLogNav] = useState(false);
   const [searchedUsers, setSearchedUsers] = useState([]);
-
   const navigate = useNavigate();
+  const userRef = useRef(user);
+
+  function setUser(data) {
+    _setUser(data);
+    userRef.current = data;
+  };
 
   useEffect(() => {
     async function fetchData() {
@@ -79,13 +84,13 @@ function App() {
 
   return (
     <LoggedInContext.Provider value={isLoggedIn}>
-      <UserContext.Provider value={user}>
+      <UserContext.Provider value={userRef.current}>
         <FriendsContext.Provider value={friends}>
           <div className="App">
             <Banner />
             <div id="content_panel">
               <Routes>
-                <Route path="/games" element={<Games />} />
+                <Route path="/games" element={<Games setUser={setUser} />} />
                 <Route path="/login" element={<Login
                   onLogin={onLogin}
                 />} />

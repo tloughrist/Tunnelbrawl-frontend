@@ -6,8 +6,8 @@ export default function GameOptions({ game, selectedGame }) {
   const [isSelected, setIsSelected] = useState(false);
 
   useEffect(() => {
-    if (Object.keys(selectedGame).length > 0) {
-      const isMatch = game.id === selectedGame.game.id;
+    if (selectedGame !== "none") {
+      const isMatch = game.id === parseInt(selectedGame);
       setIsSelected(isMatch);
     }
   }, [selectedGame]);

@@ -1,21 +1,8 @@
-import { convert } from '../Helpers/Converters.js';
+import initialize from '../Fetching/InitializeGame.js';
 
-export async function startGame(gameId, setGame, setBoard) {
-
-  const res = await fetch(`/games/initialize/${gameId}`, {
-    method: "PUT",
-    headers: {
-        "Content-Type": "application/json",
-    },
-    body: JSON.stringify({status: "active"}),
-  });
-  if (res.ok) {
-    const pkg = await res.json();
-    setGame(pkg.game);
-    setBoard(pkg.board);
-  } else {
-    console.log(res.errors);
-  }
+export async function startGame(gameId) {
+  const pkg = await initialize(gameId, {status: "active"})
+  return pkg;
 };
 
 export function cancelGame() {
@@ -34,6 +21,7 @@ export function leaveGame() {
   
 };
 
-export function restartGame() {
-  
+export async function restartGame(gameId) {
+  const pkg = await initialize(gameId, {turn: "red", phase: "move", round: 1})
+  return pkg;
 };

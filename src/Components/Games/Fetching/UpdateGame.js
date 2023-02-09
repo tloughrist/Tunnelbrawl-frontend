@@ -3,7 +3,7 @@ import { convert } from '../Helpers/Converters.js';
 import { isLocked } from '../Helpers/Checkers.js';
 import handleDraw from '../Helpers/Draw.js';
 
-export default async function submitGame(board, game, setGames, setGame, setBoard, ) {
+export default async function submitGame(board, game, setGames, setGame, setBoard) {
   const newGameState = advance(board, game);
   const newGameStatus = calcGameStatus();
   newGameState.status = newGameStatus;

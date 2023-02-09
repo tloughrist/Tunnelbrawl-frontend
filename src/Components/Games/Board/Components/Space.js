@@ -1,6 +1,5 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext } from 'react';
 import { BoardContext } from '../../Game.js';
-import Piece from './Pieces.js';
 
 export default function Space({ color, id }) { 
 

@@ -9,8 +9,8 @@ export default async function submitBoard(boardId, board) {
     body: JSON.stringify(unconvert(board)),
     });
   if (res.ok) {
-    const brd = await res.json();
-    return brd;
+    const pkg = await res.json();
+    return pkg;
   } else {
     console.log(res.errors);
   }

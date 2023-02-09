@@ -12,16 +12,16 @@ export const ColorContext = createContext();
 export const BoardIdContext = createContext();
 export const ActivePieceContext = createContext();
 
-export default function Game({ gamePkg, setGames }) {
+export default function Game({ gamePkg, games, setGames }) {
 
   const [boardId, setBoardId] = useState();
 
   const user = useContext(UserContext);
-
   const [game, _setGame] = useState(gamePkg.game);
-  const [board, _setBoard] = useState(convert(gamePkg.board, setBoard, setActivePiece, setGames, setGame));
+  const [board, _setBoard] = useState(convert(gamePkg.board, setActivePiece, setGames, games));
   const [color, _setColor] = useState(gamePkg.game.players.find(({user_id}) => user_id === user.id).color);
   const [activePiece, _setActivePiece] = useState();
+  const isHost = gamePkg.game.host_id === user.id;
 
   const gameRef = useRef(game);
   const boardRef = useRef(board);
@@ -51,13 +51,11 @@ export default function Game({ gamePkg, setGames }) {
   useEffect(() => {
     if (Object.keys(gamePkg).length > 0) {
       setGame(gamePkg.game);
-      setBoard(convert(gamePkg.board, setBoard, setActivePiece, setGames, setGame));
+      setBoard(convert(gamePkg.board, setActivePiece, setGames, games));
       setBoardId(gamePkg.board.id)
       setColor(gamePkg.game.players.find(({user_id}) => user_id === user.id).color);
     }
   }, [gamePkg])
-
-  const isHost = gamePkg.game.host_id === user.id;
 
   return (
     <GameContext.Provider value={gameRef.current}>
@@ -69,11 +67,11 @@ export default function Game({ gamePkg, setGames }) {
                 {
                   isHost ?
                     game.status === "pending" ?
-                      <HostButtonsBegin setGame={setGame} setBoard={setBoard} />
-                    : <HostButtonsMid setGame={setGame} setBoard={setBoard}/>
-                  : <GuestButtons setGame={setGame} />
+                      <HostButtonsBegin games={games} setGames={setGames} />
+                    : <HostButtonsMid games={games} setGames={setGames} />
+                  : <GuestButtons />
                 }
-                <PlayingField setBoard={setBoard} />
+                <PlayingField games={games} setGames={setGames} />
               </div>
             </ActivePieceContext.Provider>
           </BoardIdContext.Provider>

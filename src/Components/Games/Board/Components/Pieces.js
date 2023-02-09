@@ -4,8 +4,9 @@ import movePiece from '../MoveLogic/MovePiece.js';
 import showMoves from '../MoveLogic/ShowMoves.js';
 import { clearHighlight } from '../MoveLogic/Highlights.js';
 import { BoardContext, ColorContext, GameContext, BoardIdContext, ActivePieceContext } from '../../Game.js';
+import submitBoard from '../../Fetching/UpdateBoard.js';
 
-export default function Piece({type, src, alt, setBoard, setActivePiece, setGames, setGame}) {
+export default function Piece({type, src, alt, setActivePiece, setGames, games}) {
 
   const board = useContext(BoardContext);
   const color = useContext(ColorContext);
@@ -13,21 +14,21 @@ export default function Piece({type, src, alt, setBoard, setActivePiece, setGame
   const boardId = useContext(BoardIdContext);
   const activePiece = useContext(ActivePieceContext);
 
-  function handleClick(e) {
+  async function handleClick(e) {
     const spaceId = parseInt(e.target.parentElement.parentElement.id);
     const spaceItself = board.find(({loc}) => loc === spaceId);
+    const clearBoard = clearHighlight(board);
+    await submitBoard(boardId, clearBoard)
     if (spaceItself.contents.highlight === "highlight--yellow" || spaceItself.contents.highlight === "highlight--red") {
-      const clearBoard = clearHighlight(board);
-      setBoard(clearBoard);
-      movePiece(spaceId, activePiece, color, clearBoard, game, setBoard, boardId, setGames, setGame);
-      return;
-    } else if (spaceItself.contents.type === "empty") {
-      setBoard(clearHighlight(board));
+      movePiece(spaceId, activePiece, color, clearBoard, game, boardId, setGames, games);
       return;
     } else if (isHand(spaceId, color) || isBoard(spaceId)) {
       setActivePiece(spaceItself);
-      const clearBoard = clearHighlight(board);
-      setBoard(showMoves(spaceItself, clearBoard));
+      const newBoard = showMoves(spaceItself, board);
+      const gamesPkgHighLight = await submitBoard(boardId, newBoard);
+      const gamesSansHighlight = games.filter((pkg) => pkg.game.id !== gamesPkgHighLight.game.id);
+      const highlitGames = [...gamesSansHighlight, gamesPkgHighLight];
+      setGames(highlitGames);
       return;
     } else {
       return;

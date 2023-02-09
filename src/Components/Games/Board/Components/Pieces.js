@@ -3,37 +3,31 @@ import { isHand, isBoard } from '../../Helpers/Checkers.js';
 import movePiece from '../MoveLogic/MovePiece.js';
 import showMoves from '../MoveLogic/ShowMoves.js';
 import { clearHighlight } from '../MoveLogic/Highlights.js';
-import { BoardContext, ColorContext, GameContext, BoardIdContext } from '../../Game.js';
+import { BoardContext, ColorContext, GameContext, BoardIdContext, ActivePieceContext } from '../../Game.js';
 
-export default function Piece({type, src, alt, setBoard}) {
+export default function Piece({type, src, alt, setBoard, setActivePiece, setGames, setGame}) {
 
   const board = useContext(BoardContext);
   const color = useContext(ColorContext);
   const game = useContext(GameContext);
   const boardId = useContext(BoardIdContext);
-
-  const [activePiece, _setActivePiece] = useState({});
-
-  const activeRef = useRef(activePiece);
-
-  function setActivePiece(data) {
-    _setActivePiece(data);
-    activeRef.current = data;
-  };
+  const activePiece = useContext(ActivePieceContext);
 
   function handleClick(e) {
     const spaceId = parseInt(e.target.parentElement.parentElement.id);
     const spaceItself = board.find(({loc}) => loc === spaceId);
     if (spaceItself.contents.highlight === "highlight--yellow" || spaceItself.contents.highlight === "highlight--red") {
-      movePiece(spaceId);
+      const clearBoard = clearHighlight(board);
+      setBoard(clearBoard);
+      movePiece(spaceId, activePiece, color, clearBoard, game, setBoard, boardId, setGames, setGame);
       return;
     } else if (spaceItself.contents.type === "empty") {
-      clearHighlight(board, setBoard);
+      setBoard(clearHighlight(board));
       return;
     } else if (isHand(spaceId, color) || isBoard(spaceId)) {
       setActivePiece(spaceItself);
-      clearHighlight(board, setBoard);
-      showMoves(activeRef.current, board, setBoard);
+      const clearBoard = clearHighlight(board);
+      setBoard(showMoves(spaceItself, clearBoard));
       return;
     } else {
       return;

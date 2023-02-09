@@ -60,7 +60,7 @@ function Games() {
       </div>
       {
         Object.keys(selectedGame).length > 0 ?
-          <Game gamePkg={selectedGame} />
+          <Game gamePkg={selectedGame} setGames={setGames} />
         : <NewGame games={games} setGames={setGames} setGame={setSelectedGame} />
       }
     </div>

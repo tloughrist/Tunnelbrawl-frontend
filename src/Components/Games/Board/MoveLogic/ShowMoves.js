@@ -1,8 +1,8 @@
 import { isHand, isBoard, isCamp } from '../../Helpers/Checkers.js';
 import { pawnMoves, rookMoves, knightMoves, bishopMoves, queenMoves, kingMoves} from './LegalMoves.js';
-import { clearHighlight, highlight } from './Highlights.js';
+import { highlight } from './Highlights.js';
 
-export default function showMoves(activePiece, board, setBoard) {
+export default function showMoves(activePiece, board) {
   const pieceColor = activePiece.contents.color;
   const pieceType = activePiece.contents.type;
   let moves = "";
@@ -51,7 +51,7 @@ export default function showMoves(activePiece, board, setBoard) {
         return;
     }
   };
-  highlight(board, activePiece, setBoard, moves);
+  return highlight(board, activePiece, moves);
 };
 
 function calcVacancies(board, color) {

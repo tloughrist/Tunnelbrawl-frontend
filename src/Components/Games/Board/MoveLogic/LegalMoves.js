@@ -12,7 +12,6 @@ function occupied(space, boardObj) {
   if (inBounds(space)) {
     const obj = boardObj.find(({loc}) => loc === space);
     if (obj) {
-      console.log(obj)
       const contents = obj.contents;
       const occ = contents.type === "empty" ? false : true;
       return occ;

@@ -1,11 +1,12 @@
 import {isCamp} from "./Checkers.js";
 
 export default function advance(board, game) {
-  const empty = board.filter((space) => {
-    return isCamp(space.loc, game.turn) && space.contents.type === "empty"});
-  if (game.phase === "move" && empty.length > 0) {
+  console.log(board)
+  const camp = board.filter((space) => isCamp(space.loc, game.turn));
+  const vacancy = camp.filter((space) => space.contents.type === "empty");
+  if (game.phase === "move" && vacancy.length > 0) {
     return {phase: "place"};
-  } else if (game.phase === "place" && empty.length > 0) {
+  } else if (game.phase === "place" && vacancy.length > 0) {
     return {phase: "place"};
   } else {
     switch(game.no_players) {

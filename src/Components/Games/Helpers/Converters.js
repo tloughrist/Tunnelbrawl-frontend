@@ -51,19 +51,16 @@ function pieceConvert(string, setActivePiece, setGames, games ) {
     case "yk":
       return {color: "yellow", type: "king", img: <Piece type={"yellow king"} src={"./pieces/yellow_king.png"} alt={"yellow king"} setActivePiece={setActivePiece} setGames={setGames} games={games}/>, acro: "yk" }
     default:
-      return {color: "empty", type: "empty", img: <Piece type={"empty"} setActivePiece={setActivePiece} setGames={setGames} games={games}/> };
+      return {color: "empty", type: "empty", img: <Piece type={"empty"} setActivePiece={setActivePiece} setGames={setGames} games={games}/>, acro: "em"};
   }
 };
 
 export function convert(boardObj, setActivePiece, setGames, games) {
   const convertedBoard = [];
-  console.log(boardObj)
   Object.keys(boardObj).forEach((key) => {
     if (key.includes('loc')) {
       const numLoc = key.substring(3);
-      console.log(boardObj[key])
-      const spaceObj = {loc: parseInt(numLoc), contents: {...pieceConvert(boardObj[key], setActivePiece, setGames, games), highlight: boardObj[key]}};
-      console.log(spaceObj)
+      const spaceObj = {loc: parseInt(numLoc), contents: {...pieceConvert(boardObj[key].substring(0,2), setActivePiece, setGames, games), highlight: boardObj[key].substring(3)}};
       convertedBoard.push(spaceObj);
     }
   });
@@ -75,17 +72,9 @@ export function unconvert(board) {
   const spaceObjs = board.filter((obj) => Object.keys(obj).includes('loc'));
   const nonSpaceObjs = board.filter((obj) => !Object.keys(obj).includes('loc'));
   spaceObjs.forEach((obj) => {
-    const locKey = Object.keys(obj)[0];
-    const contKey = Object.keys(obj)[1]
-    const acroKey = Object.keys(obj[contKey])[3];
-    const key = `loc${obj[locKey]}`;
-    const contents = obj[contKey];
-    let newValue = "";
-    if (acroKey) {
-      newValue = contents[acroKey];
-    } else {
-      newValue = null;
-    }
+    const key = `loc${obj["loc"]}`;
+    const contents = obj["contents"];
+    const newValue = `${contents["acro"]}_${contents["highlight"]}`;
     unconvertedBoard[key] = newValue;
   });
   nonSpaceObjs.forEach((obj) => {

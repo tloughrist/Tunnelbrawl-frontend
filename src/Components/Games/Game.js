@@ -56,7 +56,7 @@ export default function Game({ gamePkg, games, setGames }) {
       setColor(gamePkg.game.players.find(({user_id}) => user_id === user.id).color);
     }
   }, [gamePkg])
-
+  
   return (
     <GameContext.Provider value={gameRef.current}>
       <BoardContext.Provider value={boardRef.current}>

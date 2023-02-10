@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useEffect, useContext, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import Game from './Game.js';
 import GameOptions from './GameOptions.js';
@@ -11,9 +11,16 @@ function Games({ setUser }) {
   
   const isLoggedIn = useContext(LoggedInContext);
   const user = useContext(UserContext);
-  const [games, setGames] = useState([]);
+  const [games, _setGames] = useState([]);
   const [selectedGame, setSelectedGame] = useState("none");
   const navigate = useNavigate();
+
+  const gamesRef = useRef(games);
+
+  function setGames(data) {
+    gamesRef.current = data;
+    _setGames(data);
+  };
 
   useEffect(() => {
     async function gameProvider(userId) {
@@ -40,7 +47,6 @@ function Games({ setUser }) {
     const updatedUser = await submitUser(user.id, {...user, current_game: value})
     setUser(updatedUser);
   };
-  console.log(games)
 
   return (
     <div>
@@ -61,9 +67,9 @@ function Games({ setUser }) {
         </select>
       </div>
         {
-          selectedGame !== "none" && games.length > 0 ?
-            <Game gamePkg={games.find((game) => game.game.id == parseInt(selectedGame))} games={games} setGames={setGames} />
-          : <NewGame games={games} setGames={setGames} setGame={setSelectedGame} />
+          selectedGame !== "none" && gamesRef.current.length > 0 ?
+            <Game gamePkg={gamesRef.current.find((game) => game.game.id === parseInt(selectedGame))} games={gamesRef.current} setGames={setGames} />
+          : <NewGame games={gamesRef.current} setGames={setGames} setGame={setSelectedGame} />
         }
     </div>
   );

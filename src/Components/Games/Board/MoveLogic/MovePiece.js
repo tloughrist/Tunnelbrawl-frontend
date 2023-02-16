@@ -1,56 +1,47 @@
 import handleCapture from './Capture.js';
-import { isHand, isLocked } from '../../Helpers/Checkers.js';
+import { isLocked } from '../../Helpers/Checkers.js';
 import advance from '../../Helpers/Advance.js';
 import submitBoard from '../../Fetching/UpdateBoard.js';
 import submitGame from '../../Fetching/UpdateGame.js';
+import Piece from '../Components/Pieces.js';
+import { resetGames } from '../../Helpers/Reseters.js';
+import { clearHighlight } from './Highlights.js';
 
-export default function movePiece(spaceId, activePiece, color, board, game, boardId, setGames, games) {
-  const emptyPiece = {color: "empty", type: "empty", img: <div className={"empty"}></div>, highlight: "highlight--none", acro: "em"}
-  if ((activePiece.contents.color === color) && (game.phase === "move")) {
-    handleCapture(spaceId, board, game);
+export default async function movePiece(spaceId, setterBundle, stateBundle) {
+
+  const activePiece = stateBundle.activePiece;
+  const board = stateBundle.board;
+  const game = stateBundle.game;
+  const boardId = stateBundle.boardId;
+  const games = stateBundle.games;
+  const color = stateBundle.color;
+  const setGames = setterBundle.setGames;
+
+  console.log(activePiece)
+
+  if (activePiece.contents.color === color) {
+    const emptyPiece = {color: "empty", type: "empty", img: <Piece type={"empty"} setterBundle={setterBundle} />, acro: "em"};
     const captureContents = board.find(({loc}) => loc === spaceId).contents;
+    handleCapture(spaceId, board, game);
     captureContents.highlight = "highlight--none";
-    replaceContents(activePiece.loc, emptyPiece, board, games, setGames, boardId);
-    replaceContents(spaceId, activePiece.contents, board, games, setGames, boardId);
-    function undoMove() {
-      replaceContents(spaceId, captureContents, board, games, setGames, boardId);
-      replaceContents(activePiece.loc, activePiece.contents, board, games, setGames, boardId);
+    const newGamePkg = await replaceContents(activePiece.loc, emptyPiece, spaceId, activePiece.contents, board, boardId);
+    resetGames(games, setGames, newGamePkg);
+    async function undoMove() {
+      const oldGamePkg = await replaceContents(activePiece.loc, activePiece.contents, spaceId, captureContents, board, boardId);
+      resetGames(games, setGames, oldGamePkg);
     };
-    confirmMove(undoMove, board, setGames, game, games);
-  } else if ((game.phase === "place") && (isHand(activePiece.loc, game.turn))) {
-    replaceContents(activePiece.loc, emptyPiece, board, games, setGames, boardId);
-    replaceContents(spaceId, activePiece.contents, board, games, setGames, boardId);
-    function undoPlace() {
-      replaceContents(spaceId, emptyPiece, board, games, setGames, boardId);
-      replaceContents(activePiece.loc, activePiece.contents, board, games, setGames, boardId);
-    };
-    confirmMove(undoPlace, board, setGames, game, games);
+    confirmMove(board, game, undoMove, games, setGames, boardId);
   } else {
     alert("Sorry, you cannot move that piece right now.");
   }
 };
 
-async function replaceContents(space, newContents, board, games, setGames, boardId) {
-  const location = board.find(({loc}) => loc === space);
-  location.contents = newContents;
-  const boardSans = board.filter(({loc}) => loc !== space);
-  const newBoard = ([...boardSans, location]);
-  const gamePkg = await submitBoard(boardId, newBoard);
-  const gamesSans = games.filter((pkg) => pkg.game.id !== gamePkg.game.id);
-  const newGames = [...gamesSans, gamePkg];
-  setGames(newGames);
-};
-
-async function confirmMove(undo, board, setGames, game, games) {
-  console.log(board)
+async function confirmMove(board, game, undoMove, games, setGames, boardId) {
   if (window.confirm("Confirm move?")) {
     async function updateGameState() {
       const newGameState = advance(board, game);
-      console.log(newGameState)
       const gamePkg = await submitGame(game.id, newGameState);
-      const gamesSans = games.filter((pkg) => pkg.game.id !== gamePkg.game.id);
-      const newGames = [...gamesSans, gamePkg];
-      setGames(newGames);
+      resetGames(games, setGames, gamePkg);
       return gamePkg;
     }
     const updatedGamePkg = await updateGameState();
@@ -58,6 +49,21 @@ async function confirmMove(undo, board, setGames, game, games) {
       updateGameState();
     }
   } else {
-    undo();
+    undoMove();
   }
+  const clearBoard = clearHighlight(board);
+  const gamePkgClear = await submitBoard(boardId, clearBoard);
+  resetGames(games, setGames, gamePkgClear);
+};
+
+async function replaceContents(space1, newContents1, space2, newContents2, board,boardId) {
+  const location1 = board.find(({loc}) => loc === space1);
+  location1.contents = newContents1;
+  const boardSans1 = board.filter(({loc}) => loc !== space1);
+  const location2 = board.find(({loc}) => loc === space2);
+  location2.contents = newContents2;
+  const boardSansBoth = boardSans1.filter(({loc}) => loc !== space2);
+  const newBoard = ([...boardSansBoth, location1, location2]);
+  const gamePkg = await submitBoard(boardId, newBoard);
+  return gamePkg;
 };

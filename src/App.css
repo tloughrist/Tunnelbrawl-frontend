@@ -93,13 +93,13 @@ body {
   }
 }
 
-.highlight--yellow {
-  border: rgb(255, 255, 255) 10px inset;
+.highlight--move {
+  border: rgb(105, 94, 94) 10px inset;
   box-shadow: inset 0px 0px 5px 10px rgb(255, 208, 0, 0);
   box-sizing: border-box;
 }
 
-.highlight--red {
+.highlight--capture {
   border: rgb(69, 69, 69, .7);
   border-width: 1px;
   border-style: solid;

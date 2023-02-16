@@ -93,7 +93,6 @@ export function deckSpaces(color) {
 };
 
 export function isLocked(game, board) {
-  console.log(board)
   const color = game.turn;
   const boardSpaces = board.filter(({loc}) => isBoard(loc));
   const hasPiece = boardSpaces.filter(({contents}) => contents.color === color);

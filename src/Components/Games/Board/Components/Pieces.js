@@ -1,25 +1,24 @@
-import React, { useContext, useState, useRef } from 'react';
+import React, { useContext } from 'react';
 import { isHand, isBoard } from '../../Helpers/Checkers.js';
 import movePiece from '../MoveLogic/MovePiece.js';
 import showMoves from '../MoveLogic/ShowMoves.js';
 import { clearHighlight } from '../MoveLogic/Highlights.js';
 import { BoardContext, ColorContext, GameContext, BoardIdContext, ActivePieceContext } from '../../Game.js';
+import { GamesContext } from '../../Games.js';
 import submitBoard from '../../Fetching/UpdateBoard.js';
+import { resetGames } from '../../Helpers/Reseters.js';
 
-export default function Piece({type, src, alt, setActivePiece, setGames, games}) {
+export default function Piece({type, src, alt, setterBundle}) {
 
+  const games = useContext(GamesContext);
   const board = useContext(BoardContext);
   const color = useContext(ColorContext);
   const game = useContext(GameContext);
   const boardId = useContext(BoardIdContext);
   const activePiece = useContext(ActivePieceContext);
-
-  function resetGames(games, setGames, newGamePkg) {
-    const newGameId = newGamePkg['game']['id'];
-    const gamesSans = games.filter((pkg) => pkg.game.id !== newGameId);
-    const newGames = [...gamesSans, newGamePkg];
-    setGames(newGames);
-  };
+  const setActivePiece = setterBundle.setActivePiece;
+  const setGames = setterBundle.setGames;
+  const stateBundle = {games: games, board: board, color: color, game: game, boardId: boardId, activePiece: activePiece};
 
   async function handleClick(e) {
     const spaceId = parseInt(e.target.parentElement.parentElement.id);
@@ -27,8 +26,8 @@ export default function Piece({type, src, alt, setActivePiece, setGames, games})
     const clearBoard = clearHighlight(board);
     const gamePkgClear = await submitBoard(boardId, clearBoard)
     resetGames(games, setGames, gamePkgClear);
-    if (spaceItself.contents.highlight === "highlight--yellow" || spaceItself.contents.highlight === "highlight--red") {
-      movePiece(spaceId, activePiece, color, clearBoard, game, boardId, setGames, games);
+    if (spaceItself.contents.highlight === "highlight--move" || spaceItself.contents.highlight === "highlight--capture") {
+      movePiece(spaceId, setterBundle, stateBundle);
       return;
     } else if (spaceItself.contents.type === "empty") {
       return;
@@ -41,7 +40,7 @@ export default function Piece({type, src, alt, setActivePiece, setGames, games})
     } else {
       return;
     }
-  };  
+  };
 
   return (
     <div className={"piece"}>

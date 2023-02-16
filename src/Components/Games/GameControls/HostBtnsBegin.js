@@ -2,7 +2,6 @@ import React, {useContext} from "react";
 import {startGame, cancelGame} from "./ButtonFunctions.js";
 import { UserContext } from '../../../App.js';
 import { GameContext } from '../Game.js';
-import { convert } from '../Helpers/Converters.js';
 
 export default function HostButtonsBegin({ games, setGames }) {
 

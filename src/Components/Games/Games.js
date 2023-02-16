@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext, useRef } from "react";
+import React, { useState, useEffect, useContext, useRef, createContext } from "react";
 import { useNavigate } from "react-router-dom";
 import Game from './Game.js';
 import GameOptions from './GameOptions.js';
@@ -6,6 +6,8 @@ import NewGame from './NewGame.js';
 import fetchGames from './Fetching/FetchGames.js';
 import submitUser from './Fetching/UpdateUser.js';
 import { LoggedInContext, UserContext } from '../../App';
+
+export const GamesContext = createContext();
 
 function Games({ setUser }) {
   
@@ -50,27 +52,31 @@ function Games({ setUser }) {
 
   return (
     <div>
-      <div>
-        <select onChange={(e) => handleSelect(e.target.value)}>
-          <option value={"none"}>New Game</option>
+      <GamesContext.Provider value={gamesRef.current}>
+        <div>
+          <select onChange={(e) => handleSelect(e.target.value)}>
+            <option value={"none"}>New Game</option>
+            {
+              games.length > 0 ?
+                games.map((game) =>
+                  <GameOptions
+                    key={`game${game.game.id}`}
+                    game={game.game}
+                    selectedGame={selectedGame}
+                  />
+                )
+              : <option value={{}}>No games available</option>
+            }
+          </select>
+        </div>
+        <div>
           {
-            games.length > 0 ?
-              games.map((game) =>
-                <GameOptions
-                  key={`game${game.game.id}`}
-                  game={game.game}
-                  selectedGame={selectedGame}
-                />
-              )
-            : <option value={{}}>No games available</option>
+            selectedGame !== "none" && gamesRef.current.length > 0 ?
+              <Game gamePkg={gamesRef.current.find((game) => game.game.id === parseInt(selectedGame))} setGames={setGames} />
+            : <NewGame setGames={setGames} setGame={setSelectedGame} />
           }
-        </select>
-      </div>
-        {
-          selectedGame !== "none" && gamesRef.current.length > 0 ?
-            <Game gamePkg={gamesRef.current.find((game) => game.game.id === parseInt(selectedGame))} games={gamesRef.current} setGames={setGames} />
-          : <NewGame games={gamesRef.current} setGames={setGames} setGame={setSelectedGame} />
-        }
+        </div>
+      </GamesContext.Provider>
     </div>
   );
 };

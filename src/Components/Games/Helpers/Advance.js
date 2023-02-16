@@ -1,7 +1,6 @@
 import {isCamp} from "./Checkers.js";
 
 export default function advance(board, game) {
-  console.log(board)
   const camp = board.filter((space) => isCamp(space.loc, game.turn));
   const vacancy = camp.filter((space) => space.contents.type === "empty");
   if (game.phase === "move" && vacancy.length > 0) {

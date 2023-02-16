@@ -4,7 +4,7 @@ import Fallen from './Fallen.js';
 import Taken from './Taken.js';
 import Board from './Board.js'
 
-export default function PlayingField() {
+export default function PlayingField({ bundle }) {
 
   return (
       <div id="playing_field">

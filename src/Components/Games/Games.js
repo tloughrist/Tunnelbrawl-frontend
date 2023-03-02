@@ -47,14 +47,16 @@ function Games({ setUser }) {
   async function handleSelect(value) {
     setSelectedGame(value);
     const updatedUser = await submitUser(user.id, {...user, current_game: value})
-    setUser(updatedUser);
   };
 
   return (
     <div>
       <GamesContext.Provider value={gamesRef.current}>
         <div>
-          <select onChange={(e) => handleSelect(e.target.value)}>
+          <select
+            onChange={(e) => handleSelect(e.target.value)}
+            value={selectedGame}
+          >
             <option value={"none"}>New Game</option>
             {
               games.length > 0 ?
@@ -62,7 +64,6 @@ function Games({ setUser }) {
                   <GameOptions
                     key={`game${game.game.id}`}
                     game={game.game}
-                    selectedGame={selectedGame}
                   />
                 )
               : <option value={{}}>No games available</option>

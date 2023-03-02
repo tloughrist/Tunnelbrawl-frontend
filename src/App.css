@@ -227,6 +227,14 @@ body {
   border-color: rgb(0, 0, 0, 0);
 }
 
+.text_block {
+  background-color: antiquewhite;
+  margin: 20px;
+  border-radius: 5px;
+  text-align: left;
+  padding: 20px;
+}
+
 #banner_container {
   position: fixed;
   top: 0;

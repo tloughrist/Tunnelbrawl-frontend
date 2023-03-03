@@ -50,6 +50,8 @@ function pieceConvert(string, setterBundle) {
       return {color: "blue", type: "king", img: <Piece type={"blue king"} src={"./pieces/blue_king.png"} alt={"blue king"} title={"Blue King"} setterBundle={setterBundle} />, acro: "bk" }
     case "yk":
       return {color: "yellow", type: "king", img: <Piece type={"yellow king"} src={"./pieces/yellow_king.png"} alt={"yellow king"} title={"Yellow King"} setterBundle={setterBundle} />, acro: "yk" }
+    case "xx":
+      return {color: "block", type: "block", img: <Piece type={"block"} src={"./tunnel_walls.png"} alt={"blocked tunnel mouth"} title={"Blocked Tunnel Mouth"}setterBundle={setterBundle} />, acro: "xx"};
     default:
       return {color: "empty", type: "empty", img: <Piece type={"empty"} setterBundle={setterBundle} />, acro: "em"};
   }

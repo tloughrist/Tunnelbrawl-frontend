@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useEffect, useState, useRef } from "react";
+import swal from '@sweetalert/with-react';
 import HostButtonsMid from './GameControls/HostBtnsMid.js';
 import HostButtonsBegin from './GameControls/HostBtnsBegin.js';
 import GuestButtons from './GameControls/GuestBtns.js';
@@ -49,6 +50,14 @@ export default function Game({ gamePkg, setGames }) {
     activeRef.current = data;
   };
 
+  function announceGameWinner() {
+    const winner = game.players.find((player) => {
+      return player.status === "winner";
+    })
+    console.log(winner)
+    return swal(`${winner.username} Wins!`)
+  }
+
   useEffect(() => {
     if (Object.keys(gamePkg).length > 0) {
       setGame(gamePkg.game);
@@ -59,6 +68,12 @@ export default function Game({ gamePkg, setGames }) {
       setColor(gamePkg.game.turn)
     }
   }, [gamePkg])
+
+  useEffect(() => {
+    if (game.status === "complete") {
+      announceGameWinner()
+    }
+  }, [game])
   
   return (
     <GameContext.Provider value={gameRef.current}>

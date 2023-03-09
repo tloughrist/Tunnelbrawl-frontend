@@ -19,7 +19,7 @@ export default function Status() {
       <div>
         {game.players.map((player) =>
           <div key={`player${player.username}`}>
-            <p>{player.color} - {player.username}</p>
+            <p>{player.color} - {player.username} - {player.status}</p>
           </div>
         )}
       </div>

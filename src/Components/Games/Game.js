@@ -54,7 +54,6 @@ export default function Game({ gamePkg, setGames }) {
     const winner = game.players.find((player) => {
       return player.status === "winner";
     })
-    console.log(winner)
     return swal(`${winner.username} Wins!`)
   }
 
@@ -63,9 +62,9 @@ export default function Game({ gamePkg, setGames }) {
       setGame(gamePkg.game);
       setBoard(convert(gamePkg.board, setterBundle));
       setBoardId(gamePkg.board.id)
-      //setColor(gamePkg.game.players.find(({user_id}) => user_id === user.id).color);
+      setColor(gamePkg.game.players.find(({user_id}) => user_id === user.id).color);
       //Dev only
-      setColor(gamePkg.game.turn)
+      //setColor(gamePkg.game.turn)
     }
   }, [gamePkg])
 

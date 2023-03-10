@@ -8,9 +8,6 @@ function PlayersWanted() {
   const user = useContext(UserContext);
   const [publicGames, setPublicGames] = useState([]);
 
-console.log(user)
-console.log(user.id ? true : false)
-
   useEffect(() => {
     async function publicGamesProvider() {
       const gamePkgs = await fetchPublic(user.id);
@@ -21,6 +18,10 @@ console.log(user.id ? true : false)
     }
   }, [user]);
 
+  function handleJoin(games) {
+    setPublicGames(games);
+  };
+  //Why is handleJoin "not a function"?
   console.log(publicGames)
 
   return (
@@ -34,6 +35,7 @@ console.log(user.id ? true : false)
                   <PublicGameCard
                     key={`game${game.id}`}
                     game={game}
+                    handleJoin={handleJoin}
                   />
                 )}
               </div>

@@ -9,11 +9,6 @@ export default async function joinGame(game_id, user_id) {
       game_id: game_id,
     }),
   });
-  const user = await res.json();
-  if (user.errors) {
-    alert("Incorrect username/password");
-  } else {
-    onLogin(user);
-  }
-};
+  const publicGames = await response.json();
+  return publicGames;
 };

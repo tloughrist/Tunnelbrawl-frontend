@@ -1,12 +1,16 @@
-import React from "react";
+import React, { useContext } from "react";
+import joinGame from "./Fetching/JoinGame.js";
+import { UserContext } from '../../App';
 
-function PublicGameCard( game ) {
+function PublicGameCard( game, handleJoin ) {
 
-  const current_game = game.game
+  const current_game = game.game;
+  const user = useContext(UserContext);
 
-  function joinGame() {
-    
-  }
+  function handleClick() {
+    const publicGames = joinGame(current_game.id, user.id);
+    handleJoin(publicGames);
+  };
 
   return (
     <div className="game_card">
@@ -14,7 +18,7 @@ function PublicGameCard( game ) {
       <p><b>Players:</b></p>
       {current_game.players.map((player) => <p>{player}</p>)}
       <p><b>Game Type: </b>{current_game.email_notifications ? "asynchronous" : "synchronous"}</p>
-      <button onClick={joinGame()}>Join</button>
+      <button onClick={(e) => handleClick()}>Join</button>
     </div>
   );
 };

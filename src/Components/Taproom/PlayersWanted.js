@@ -18,10 +18,6 @@ function PlayersWanted() {
     }
   }, [user]);
 
-  function handleJoin(games) {
-    setPublicGames(games);
-  };
-  //Why is handleJoin "not a function"?
   console.log(publicGames)
 
   return (
@@ -35,7 +31,7 @@ function PlayersWanted() {
                   <PublicGameCard
                     key={`game${game.id}`}
                     game={game}
-                    handleJoin={handleJoin}
+                    setPublicGames={setPublicGames}
                   />
                 )}
               </div>

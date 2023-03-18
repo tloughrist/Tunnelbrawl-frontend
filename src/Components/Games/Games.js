@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useContext, useRef, createContext } from "react";
 import { useNavigate } from "react-router-dom";
+import { createConsumer } from "@rails/actioncable"
 import Game from './Game.js';
 import GameOptions from './GameOptions.js';
 import NewGame from './NewGame.js';
@@ -15,13 +16,36 @@ function Games({ setUser }) {
   const user = useContext(UserContext);
   const [games, _setGames] = useState([]);
   const [selectedGame, setSelectedGame] = useState("none");
+  const [gamePkg, setGamePkg] = useState({});
   const navigate = useNavigate();
+
 
   const gamesRef = useRef(games);
 
   function setGames(data) {
     gamesRef.current = data;
     _setGames(data);
+  };
+
+  function createSocket(gameId) {
+    let cable = createConsumer('ws://localhost:3000/cable');
+    const gameConnection = cable.subscriptions.create({
+      channel: 'GameChannel',
+      id: gameId
+    }, {
+      connected: () => {
+        console.log("Connected to the channel:");
+      },
+      disconnected: () => {
+        console.log("Disconnected");
+      },
+      received: async (data) => {
+        console.log("Received some data:");
+        console.log(typeof data)
+        console.log(data)
+        setGamePkg(data);
+      }
+    });
   };
 
   useEffect(() => {
@@ -43,6 +67,11 @@ function Games({ setUser }) {
     }
     sendHome(isLoggedIn);
   }, [isLoggedIn, navigate]);
+
+  useEffect(() => {
+    //const game = gamesRef.current.find((game) => game.game.id === parseInt(selectedGame));
+    createSocket(selectedGame);
+  }, [selectedGame]);
 
   async function handleSelect(value) {
     setSelectedGame(value);
@@ -74,7 +103,7 @@ function Games({ setUser }) {
           {
             selectedGame !== "none" && gamesRef.current.length > 0 ?
               <Game
-                gamePkg={gamesRef.current.find((game) => game.game.id === parseInt(selectedGame))}
+                gamePkg={gamePkg}
                 setGames={setGames}
                 selectedGame={selectedGame}
                 setSelectedGame = {setSelectedGame}

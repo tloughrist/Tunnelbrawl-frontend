@@ -1,6 +1,5 @@
 import React, { createContext, useContext, useEffect, useState, useRef } from "react";
 import swal from '@sweetalert/with-react';
-import createSocket from '../../Channels/consumer.js';
 import HostButtonsMid from './GameControls/HostBtnsMid.js';
 import HostButtonsBegin from './GameControls/HostBtnsBegin.js';
 import GuestButtons from './GameControls/GuestBtns.js';
@@ -15,8 +14,8 @@ export const ColorContext = createContext();
 export const BoardIdContext = createContext();
 export const ActivePieceContext = createContext();
 
-export default function Game({ gamePkg, setGames, selectedGame, setSelectedGame }) {
-
+export default function Game({ gamePkg, setGames, setSelectedGame }) {
+  console.log(gamePkg)
   const [boardId, setBoardId] = useState(gamePkg.board.id);
   const user = useContext(UserContext);
   const games = useContext(GamesContext);
@@ -56,7 +55,7 @@ export default function Game({ gamePkg, setGames, selectedGame, setSelectedGame 
       return player.status === "winner";
     })
     return swal(`${winner.username} Wins!`)
-  }
+  };
 
   useEffect(() => {
     if (Object.keys(gamePkg).length > 0) {
@@ -74,10 +73,6 @@ export default function Game({ gamePkg, setGames, selectedGame, setSelectedGame 
       announceGameWinner()
     }
   }, [game])
-
-  useEffect(() => {
-    createSocket(game.id);
-  }, [selectedGame]);
   
   return (
     <GameContext.Provider value={gameRef.current}>

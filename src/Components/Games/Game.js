@@ -15,7 +15,7 @@ export const ColorContext = createContext();
 export const BoardIdContext = createContext();
 export const ActivePieceContext = createContext();
 
-export default function Game({ gamePkg, setGames, setSelectedGame }) {
+export default function Game({ gamePkg, setGames, selectedGame, setSelectedGame }) {
 
   const [boardId, setBoardId] = useState(gamePkg.board.id);
   const user = useContext(UserContext);
@@ -77,7 +77,7 @@ export default function Game({ gamePkg, setGames, setSelectedGame }) {
 
   useEffect(() => {
     createSocket(game.id);
-  }, [games]);
+  }, [selectedGame]);
   
   return (
     <GameContext.Provider value={gameRef.current}>

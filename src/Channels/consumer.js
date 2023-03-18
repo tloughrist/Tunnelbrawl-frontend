@@ -7,13 +7,15 @@ function createSocket(gameId) {
     id: gameId
   }, {
     connected: () => {
-      console.log("Connected to the channel:" );
+      console.log("Connected to the channel:");
     },
     disconnected: () => {
       console.log("Disconnected");
     },
-    received: () => {
+    received: async (data) => {
       console.log("Received some data:");
+      console.log(typeof data)
+      console.log(data)
     }
   });
 };

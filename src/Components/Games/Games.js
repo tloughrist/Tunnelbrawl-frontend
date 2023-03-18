@@ -76,6 +76,7 @@ function Games({ setUser }) {
               <Game
                 gamePkg={gamesRef.current.find((game) => game.game.id === parseInt(selectedGame))}
                 setGames={setGames}
+                selectedGame={selectedGame}
                 setSelectedGame = {setSelectedGame}
               />
             : <NewGame

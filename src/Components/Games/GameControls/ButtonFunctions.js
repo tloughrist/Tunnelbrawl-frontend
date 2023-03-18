@@ -1,16 +1,14 @@
 import initialize from '../Fetching/InitializeGame.js';
+import cancel from '../Fetching/CancelGame.js';
 
 export async function startGame(gameId) {
-  const pkg = await initialize(gameId, {status: "active"})
+  const pkg = await initialize(gameId, {status: "active"});
   return pkg;
 };
 
-export function cancelGame() {
-
-};
-
-export function invitePlayer() {
-
+export async function cancelGame(gameId) {
+  const pkg = await cancel(gameId);
+  return pkg;
 };
 
 export function removePlayer() {

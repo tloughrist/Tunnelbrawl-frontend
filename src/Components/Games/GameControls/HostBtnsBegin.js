@@ -3,7 +3,7 @@ import {startGame, cancelGame} from "./ButtonFunctions.js";
 import { UserContext } from '../../../App.js';
 import { GameContext } from '../Game.js';
 
-export default function HostButtonsBegin({ games, setGames }) {
+export default function HostButtonsBegin({ games, setGames, setSelectedGame }) {
 
   const user = useContext(UserContext);
   const game = useContext(GameContext);
@@ -16,16 +16,15 @@ export default function HostButtonsBegin({ games, setGames }) {
   };
 
   async function handleCancel() {
-    cancelGame(game.id);
-  }
+    const gamePkgs = await cancelGame(game.id);
+    setSelectedGame("none");
+    setGames(gamePkgs);
+  };
 
   return (
     <div>
       <button onClick={handleStart}>Start Game</button>
       <button onClick={handleCancel}>Cancel Game</button>
-      <button>Invite Players</button>
-      <button>Remove Players</button>
-      <button>Message Players</button>
     </div>
   );
 };

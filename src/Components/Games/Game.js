@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useEffect, useState, useRef } from "react";
 import swal from '@sweetalert/with-react';
+import ActionCable from '@rails/actionable';
 import HostButtonsMid from './GameControls/HostBtnsMid.js';
 import HostButtonsBegin from './GameControls/HostBtnsBegin.js';
 import GuestButtons from './GameControls/GuestBtns.js';
@@ -14,7 +15,7 @@ export const ColorContext = createContext();
 export const BoardIdContext = createContext();
 export const ActivePieceContext = createContext();
 
-export default function Game({ gamePkg, setGames }) {
+export default function Game({ gamePkg, setGames, setSelectedGame }) {
 
   const [boardId, setBoardId] = useState(gamePkg.board.id);
   const user = useContext(UserContext);
@@ -73,6 +74,18 @@ export default function Game({ gamePkg, setGames }) {
       announceGameWinner()
     }
   }, [game])
+
+  src.cable.subscriptions.create({ channel: "GamesChannel", id: game.id }, {
+    connected() {
+      console.log("Connected to the channel:", this);
+    },
+    disconnected() {
+      console.log("Disconnected");
+    },
+    received(data) {
+      console.log("Received some data:", data);
+    }
+  });
   
   return (
     <GameContext.Provider value={gameRef.current}>
@@ -84,8 +97,16 @@ export default function Game({ gamePkg, setGames }) {
                 {
                   isHost ?
                     game.status === "pending" ?
-                      <HostButtonsBegin games={games} setGames={setGames} />
-                    : <HostButtonsMid games={games} setGames={setGames} />
+                      <HostButtonsBegin
+                        games={games}
+                        setGames={setGames}
+                        setSelectedGame={setSelectedGame}
+                      />
+                    : <HostButtonsMid
+                        games={games}
+                        setGames={setGames}
+                        setSelectedGame={setSelectedGame}
+                      />
                   : <GuestButtons />
                 }
                 <PlayingField setterBundle={setterBundle} />

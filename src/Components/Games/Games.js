@@ -73,8 +73,15 @@ function Games({ setUser }) {
         <div>
           {
             selectedGame !== "none" && gamesRef.current.length > 0 ?
-              <Game gamePkg={gamesRef.current.find((game) => game.game.id === parseInt(selectedGame))} setGames={setGames} />
-            : <NewGame setGames={setGames} setGame={setSelectedGame} />
+              <Game
+                gamePkg={gamesRef.current.find((game) => game.game.id === parseInt(selectedGame))}
+                setGames={setGames}
+                setSelectedGame = {setSelectedGame}
+              />
+            : <NewGame
+                setGames={setGames}
+                setGame={setSelectedGame}
+              />
           }
         </div>
       </GamesContext.Provider>

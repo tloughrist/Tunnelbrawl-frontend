@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useEffect, useState, useRef } from "react";
 import swal from '@sweetalert/with-react';
-import ActionCable from '@rails/actionable';
+import createSocket from '../../Channels/consumer.js';
 import HostButtonsMid from './GameControls/HostBtnsMid.js';
 import HostButtonsBegin from './GameControls/HostBtnsBegin.js';
 import GuestButtons from './GameControls/GuestBtns.js';
@@ -75,17 +75,9 @@ export default function Game({ gamePkg, setGames, setSelectedGame }) {
     }
   }, [game])
 
-  src.cable.subscriptions.create({ channel: "GamesChannel", id: game.id }, {
-    connected() {
-      console.log("Connected to the channel:", this);
-    },
-    disconnected() {
-      console.log("Disconnected");
-    },
-    received(data) {
-      console.log("Received some data:", data);
-    }
-  });
+  useEffect(() => {
+    createSocket(game.id);
+  }, [games]);
   
   return (
     <GameContext.Provider value={gameRef.current}>

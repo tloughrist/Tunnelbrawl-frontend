@@ -7,7 +7,7 @@ export default function Status() {
 
   function capFirst(string) {
     return string.charAt(0).toUpperCase() + string.slice(1);
-  }
+  };
 
   return (
     <div className='text_block'>

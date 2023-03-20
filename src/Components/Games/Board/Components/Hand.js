@@ -9,12 +9,7 @@ export default function Hand({ setBoard }) {
 
   return (
     <div>
-      <div>
-        <div className={`space space--${color}`} id="deck">
-
-        </div>
-      </div>
-      <div className="row" id="hand">
+      <div className="column" id="hand">
         <Space color={`space--${color}`} id={handSpaces(color)[0]} setBoard={setBoard} />
         <Space color={`space--${color}`} id={handSpaces(color)[1]} setBoard={setBoard} />
         <Space color={`space--${color}`} id={handSpaces(color)[2]} setBoard={setBoard} />

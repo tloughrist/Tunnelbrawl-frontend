@@ -15,7 +15,7 @@ export const BoardIdContext = createContext();
 export const ActivePieceContext = createContext();
 
 export default function Game({ gamePkg, setGames, setSelectedGame }) {
-  console.log(gamePkg)
+  
   const [boardId, setBoardId] = useState(gamePkg.board.id);
   const user = useContext(UserContext);
   const games = useContext(GamesContext);

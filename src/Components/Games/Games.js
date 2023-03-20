@@ -16,36 +16,44 @@ function Games({ setUser }) {
   const user = useContext(UserContext);
   const [games, _setGames] = useState([]);
   const [selectedGame, setSelectedGame] = useState("none");
-  const [gamePkg, setGamePkg] = useState({});
+  const [gamePkg, _setGamePkg] = useState({});
+  const [cable, setCable] = useState(createConsumer('ws://localhost:3000/cable'));
+  const [subscript, setSubscript] = useState({});
   const navigate = useNavigate();
 
-
   const gamesRef = useRef(games);
+  const gamePkgRef = useRef(gamePkg);
 
   function setGames(data) {
     gamesRef.current = data;
     _setGames(data);
   };
 
-  function createSocket(gameId) {
-    let cable = createConsumer('ws://localhost:3000/cable');
-    const gameConnection = cable.subscriptions.create({
+  function setGamePkg(data) {
+    gamePkgRef.current = data;
+    _setGames(data);
+  };
+
+  function subscribe() {
+    const sub = cable.subscriptions.create({
       channel: 'GameChannel',
-      id: gameId
+      id: selectedGame
     }, {
       connected: () => {
-        console.log("Connected to the channel:");
+        const identifier = JSON.parse(sub.identifier);
+        console.log(`Connected to the channel: GameChannel ${identifier.id}`);
       },
       disconnected: () => {
-        console.log("Disconnected");
+        const identifier = JSON.parse(sub.identifier);
+        console.log(`Disconnected from the channel: GameChannel ${identifier.id}`);
       },
       received: async (data) => {
-        console.log("Received some data:");
-        console.log(typeof data)
-        console.log(data)
+        const identifier = JSON.parse(sub.identifier);
+        console.log(`Receiving data from channel: GameChannel ${identifier.id}`);
         setGamePkg(data);
       }
     });
+    setSubscript(sub);
   };
 
   useEffect(() => {
@@ -60,6 +68,12 @@ function Games({ setUser }) {
   }, [user]);
 
   useEffect(() => {
+    if (games.length > 0 && selectedGame !== "none") {
+      setGamePkg(gamesRef.current.find((game) => game.game.id === parseInt(selectedGame)))
+    }
+  }, [games]);
+
+  useEffect(() => {
     function sendHome(logStatus) {
       if (logStatus === false) {
         navigate("/home");
@@ -69,8 +83,10 @@ function Games({ setUser }) {
   }, [isLoggedIn, navigate]);
 
   useEffect(() => {
-    //const game = gamesRef.current.find((game) => game.game.id === parseInt(selectedGame));
-    createSocket(selectedGame);
+    cable.subscriptions.remove(subscript);
+    if (selectedGame !== "none") {
+      subscribe();
+    }
   }, [selectedGame]);
 
   async function handleSelect(value) {
@@ -88,8 +104,8 @@ function Games({ setUser }) {
           >
             <option value={"none"}>New Game</option>
             {
-              games.length > 0 ?
-                games.map((game) =>
+              gamesRef.current.length > 0 ?
+              gamesRef.current.map((game) =>
                   <GameOptions
                     key={`game${game.game.id}`}
                     game={game.game}
@@ -101,9 +117,9 @@ function Games({ setUser }) {
         </div>
         <div>
           {
-            selectedGame !== "none" && gamesRef.current.length > 0 ?
+            selectedGame !== "none" && Object.keys(gamePkgRef.current).length > 0 ?
               <Game
-                gamePkg={gamePkg}
+                gamePkg={gamePkgRef.current}
                 setGames={setGames}
                 selectedGame={selectedGame}
                 setSelectedGame = {setSelectedGame}

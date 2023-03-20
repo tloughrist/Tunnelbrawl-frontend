@@ -49,6 +49,13 @@ body {
   z-index: 4;
 }
 
+.column {
+  display: flex;
+  flex-direction: column;
+  flex-wrap: nowrap;
+  width: fit-content;
+}
+
 .container {
   position: relative;
   z-index: 3;
@@ -160,6 +167,11 @@ body {
   align-items: center;
 }
 
+.piece_image {
+  width: 200px;
+  border-radius: 50px;
+}
+
 .row {
   display: flex;
   flex-direction: row;
@@ -237,7 +249,7 @@ body {
 
 #banner_container {
   position: fixed;
-  top: 0;
+  top: -1;
   width: 100%;
   z-index: 9;
 }

@@ -105,7 +105,6 @@ function App() {
                 <Route path="/" element={<Navigate to="/home" />} />
               </Routes>
             </div>
-            <Footer />
           </div>
         </FriendsContext.Provider>
       </UserContext.Provider>

@@ -9,7 +9,6 @@ export default function GuestButtons({ }) {
   return (
     <div>
       <button onClick={leaveGame}>Leave Game</button>
-      <button>Message Players</button>
     </div>
   );
 };

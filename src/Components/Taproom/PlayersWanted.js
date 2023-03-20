@@ -18,8 +18,6 @@ function PlayersWanted() {
     }
   }, [user]);
 
-  console.log(publicGames)
-
   return (
     <div className="text_block">
       <h4>Public Games - Players Wanted</h4>

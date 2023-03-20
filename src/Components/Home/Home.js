@@ -55,8 +55,8 @@ function Home() {
           <div>
             <h3>Pawns</h3>
             <div>
-              <div className="piece_image">
-
+              <div>
+                <img className="piece_image" src="./pieces/red_pawn.png"/>
               </div>
               <div className="piece_description">
                 <p><i>Pawns are the backbone of the clan. They are numerous &#40;there are eight of them in each clan&#41; and quick to mobilize &#40;you begin with four pawns at the mouth of your tunnel&#41;.</i></p>
@@ -74,14 +74,14 @@ function Home() {
           <div>
             <h3>Rooks</h3>
             <div>
-              <div className="piece_image">
-
+              <div>
+                <img className="piece_image" src="./pieces/yellow_rook.png"/>
               </div>
               <div className="piece_description">
                 <p><i>Rooks are the bruisers of the clan. They charge into battle, running straight at the enemy, scattering their foes before them.</i></p>
                 <p>Rooks can move any number of squares forward, backward, or sideways. They cannot move diagonally.</p>
-                <p>If there is a a piece between the rook's starting square and ending square, they cannot take that move.</p>
-                <p>Rooks capture during the course of a normal move. If there is an enemy piece in their ending square, they replace that piece.</p>
+                <p>If there is a piece between the rook's starting square and ending square, they cannot take that move.</p>
+                <p>Rooks capture during the course of a normal move: if there is an enemy piece in their ending square, they replace that piece.</p>
                 <p>For those familiar with the rules of chess, castling is not permitted in Tunnel Brawl.</p>
               </div>
               <div className="move_image">
@@ -92,8 +92,8 @@ function Home() {
           <div>
             <h3>Knights</h3>
             <div>
-              <div className="piece_image">
-
+              <div>
+                <img className="piece_image" src="./pieces/blue_knight.png"/>
               </div>
               <div className="piece_description">
                 <p><i>The clan's knights are high-mobility units, leaping over and around friends and enemies alike.</i></p>
@@ -109,14 +109,14 @@ function Home() {
           <div>
             <h3>Bishops</h3>
             <div>
-              <div className="piece_image">
-
+              <div>
+                <img className="piece_image" src="./pieces/green_bishop.png"/>
               </div>
               <div className="piece_description">
                 <p><i>Bishops are the clan's spiritual leaders, forming a deep connection to the stony walls of the tunnels themselves. This connection allows bishops to slip through the battlefield, appearing where they are least expected.</i></p>
                 <p>Bishops move diagonally, either forward or backward, any number of sqares.</p>
                 <p>If there is a a piece between the bishop's starting square and ending square, they cannot take that move.</p>
-                <p>Bishops capture during the course of a normal move. If there is an enemy piece in their ending square, they replace that piece.</p>
+                <p>Bishops capture during the course of a normal move: if there is an enemy piece in their ending square, they replace that piece.</p>
               </div>
               <div className="move_image">
 
@@ -126,14 +126,14 @@ function Home() {
           <div>
             <h3>Queens</h3>
             <div>
-              <div className="piece_image">
-
+              <div>
+                <img className="piece_image" src="./pieces/red_queen.png"/>
               </div>
               <div className="piece_description">
                 <p><i>Each clan is commanded by a regal warrior-queen. The queen moves quickly about the battlefield, always seeking out those places where the fighting is most intense.</i></p>
                 <p>Queens can move any number of squares forward, backward, sideways, or diagonally.</p>
                 <p>If there is a a piece between the queen's starting square and ending square, they cannot take that move.</p>
-                <p>Queens capture during the course of a normal move. If there is an enemy piece in their ending square, they replace that piece.</p>
+                <p>Queens capture during the course of a normal move: if there is an enemy piece in their ending square, they replace that piece.</p>
               </div>
               <div className="move_image">
 
@@ -143,13 +143,13 @@ function Home() {
           <div>
             <h3>Kings</h3>
             <div>
-              <div className="piece_image">
-
+              <div>
+                <img className="piece_image" src="./pieces/yellow_king.png"/>
               </div>
               <div className="piece_description">
                 <p><i>The clan is ruled by a king, a slow but mighty warrior. Kings are often the last to arrive on the battlefield and when a king falls, their clan is thrown into chaos. Any member of the clan would gladly put themselves in harm's way to save their king.</i></p>
                 <p>Kings can moves one square in any direction.</p>
-                <p>Kings capture during the course of a normal move. If there is an enemy piece in their ending square, they replace that piece.</p>
+                <p>Kings capture during the course of a normal move: if there is an enemy piece in their ending square, they replace that piece.</p>
                 <p>A king can capture one of their own pieces, typically to escape check.</p>
                 <p>If a king is captured, all of that clan's pieces are removed from the board. That player has lost.</p>
                 <p></p>
@@ -183,7 +183,7 @@ function Home() {
             <h3>Locking</h3>
             <div>
               <p>A situation can arise where a player is unable to make any legal move. In that case, that player forfeits the move phase of their turn.</p>
-              <p>Likewise, if a player's tunnel mouth is completely occupied during the reinforcment phase of their turn, they forfeit that phase.</p>
+              <p>Likewise, if a player's tunnel mouth is completely occupied during the placement phase of their turn, they forfeit that phase.</p>
             </div>
           </div>
         </div>
@@ -191,7 +191,7 @@ function Home() {
           <h2>Creators</h2>
           <div>
             <p>This game was designed by Mark Alan Osterhaus and appeared under the name <i>Bosworth</i> in the U.S. and <i>Waterloo</i> in Europe.</p>
-            <p>This online version of the game was created by Tim Loughrist.</p>
+            <p>This online version of the game was created by <a href = "https://timloughrist.com/">Tim Loughrist</a>.</p>
             <p>Piece art for the online version of the game was created by Kat Morrow.</p>
           </div>
         </div>

@@ -1,4 +1,4 @@
-export default async function createGame(userId, title, publicity, email) {
+export default async function createGame(userId, title) {
   const res = await fetch(`/games`, {
     method: "POST",
     headers: {
@@ -7,8 +7,6 @@ export default async function createGame(userId, title, publicity, email) {
     body: JSON.stringify({
       host_id: userId,
       title: title,
-      public: publicity,
-      email_notifications: email,
       no_players: 1,
       turn: "red",
       round: 1,

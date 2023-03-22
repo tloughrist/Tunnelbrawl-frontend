@@ -24,6 +24,7 @@ export default function Game({ gamePkg, setGames, setSelectedGame }) {
   const [board, _setBoard] = useState(convert(gamePkg.board, setterBundle));
   const [color, _setColor] = useState(gamePkg.game.players.find(({user_id}) => user_id === user.id).color);
   const [activePiece, _setActivePiece] = useState();
+  const [moveAcknowledged, setMoveAcknowledged] = useState(false);
   const isHost = gamePkg.game.host_id === user.id;
   const gameRef = useRef(game);
   const boardRef = useRef(board);
@@ -57,6 +58,14 @@ export default function Game({ gamePkg, setGames, setSelectedGame }) {
     return swal(`${winner.username} Wins!`)
   };
 
+  function announceMove() {
+    if (game.round === 1) {
+      return swal("It's your move.", "After your move, don't forget to place a new piece from your hand onto one of the four squares of your tunnel." )
+    } else {
+      return swal("It's your move.");
+    }
+  };
+
   useEffect(() => {
     if (Object.keys(gamePkg).length > 0) {
       setGame(gamePkg.game);
@@ -71,6 +80,20 @@ export default function Game({ gamePkg, setGames, setSelectedGame }) {
   useEffect(() => {
     if (game.status === "complete") {
       announceGameWinner()
+    }
+  }, [game]);
+
+  useEffect(() => {
+    if (game.turn !== colorRef.current) {
+      setMoveAcknowledged(false);
+    }
+    if (game.turn === colorRef.current && !moveAcknowledged) {
+      announceMove()
+      .then((value) => {
+        if (value) {
+          setMoveAcknowledged(true);
+        }
+      });
     }
   }, [game])
   

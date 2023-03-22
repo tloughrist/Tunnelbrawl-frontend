@@ -11,10 +11,6 @@ export async function cancelGame(gameId) {
   return pkg;
 };
 
-export function removePlayer() {
-
-};
-
 export function leaveGame() {
   
 };

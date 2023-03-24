@@ -4,15 +4,17 @@ function Home() {
 
   return (
     <div className="text_block">
-      <h2>Deep underground, rival clans of dwarves expand their tunnels,  searching for more gems and precious metals. When their tunnels collide, the entire clan mobilizes, rushing to the tunnels to claim the contested territory. When three or four tunnels intersect, an all-out melee ensues...</h2>
-      <h1>...a tunnel brawl!</h1>
-      <p><b>Tunnel Brawl</b> is a modified form of chess for two to four players.</p>
-      <p>Each player takes charge of a clan of dwarves fighting for territory. A clan is made up of eight pawns, two rooks, two knights, two bishops, a queen, and a king.</p>
-      <p>At the start of the game, each player has four pawns at the mouth of their tunnel and four random pieces in reserve.</p>
-      <p>Each turn, if there is room in a player's tunnel mouth, they will place a reinforcement from their reserve into an open square in their tunnel mouth. The reserves will then be replenished back to four pieces for as long as unplaced pieces remain in the clan.</p>
-      <p>The game ends when all kings but one have been captured.</p>
+      <div className="home_section">
+        <h2>Deep underground, rival clans of dwarves expand their tunnels,  searching for more gems and precious metals. When their tunnels collide, the entire clan mobilizes, rushing to the tunnels to claim the contested territory. When three or four tunnels intersect, an all-out melee ensues...</h2>
+        <h1>...a tunnel brawl!</h1>
+        <p><b>Tunnel Brawl</b> is a modified form of chess for two to four players.</p>
+        <p>Each player takes charge of a clan of dwarves fighting for territory. A clan is made up of eight pawns, two rooks, two knights, two bishops, a queen, and a king.</p>
+        <p>At the start of the game, each player has four pawns at the mouth of their tunnel and four random pieces in reserve.</p>
+        <p>Each turn, if there is room in a player's tunnel mouth, they will place a reinforcement from their reserve into an open square in their tunnel mouth. The reserves will then be replenished back to four pieces for as long as unplaced pieces remain in the clan.</p>
+        <p>The game ends when all kings but one have been captured.</p>
+      </div>
       <div>
-        <div>
+        <div className="home_section">
           <h2>Setup</h2>
           <div>
             <div>
@@ -21,17 +23,11 @@ function Home() {
                 <div className="board_description">
                   <p>One player takes control of the red clan and the other takes control of the blue clan. They begin opposite each other, at the eastern and western tunnel mouths. The north and south tunnel mouths are blocked.</p>
                 </div>
-                <div className="board_image">
-
-                </div>
               </div>
             </div>
             <div>
               <h3>Three Players</h3>
               <div>
-                <div className="board_image">
-
-                </div>
                 <div className="board_description">
                   <p>The players take control of the red, green, and blue clans. They begin in the western &#40;red clan&#41;, northern &#40;green clan&#41;, and eastern &#40;blue clan&#41; tunnel mouths. The southern tunnel mouth is blocked.</p>
                 </div>
@@ -43,18 +39,15 @@ function Home() {
                 <div className="board_description">
                   <p>The players take control of the red, green, blue, and yellow clans. The setup for four players is identical to the setup for three players, except the southern tunnel mouth is occupied by the yellow clan.</p>
                 </div>
-                <div className="board_image">
-
-                </div>
               </div>
             </div>
           </div>
         </div>
-        <div>
+        <div className="home_section">
           <h2>Moving and Capturing</h2>
           <div>
             <h3>Pawns</h3>
-            <div>
+            <div className="piece_combo">
               <div>
                 <img className="piece_image" src="./pieces/red_pawn.png"/>
               </div>
@@ -66,14 +59,11 @@ function Home() {
                 <p>Pawns capture on the diagonal. If there is an enemy piece one square diagonally from the pawn's starting square, even if that piece is diagonally behind the pawn, the pawn can capture that piece, replacing it on the board.</p>
                 <p>For those familiar with the rules of chess, pawns in Tunnel Brawl cannot capture en passant. Pawn promotion also does not occur in Tunnel Brawl.</p>
               </div>
-              <div className="move_image">
-
-              </div>
             </div>
           </div>
           <div>
             <h3>Rooks</h3>
-            <div>
+            <div className="piece_combo">
               <div>
                 <img className="piece_image" src="./pieces/yellow_rook.png"/>
               </div>
@@ -84,14 +74,11 @@ function Home() {
                 <p>Rooks capture during the course of a normal move: if there is an enemy piece in their ending square, they replace that piece.</p>
                 <p>For those familiar with the rules of chess, castling is not permitted in Tunnel Brawl.</p>
               </div>
-              <div className="move_image">
-
-              </div>
             </div>
           </div>
           <div>
             <h3>Knights</h3>
-            <div>
+            <div className="piece_combo">
               <div>
                 <img className="piece_image" src="./pieces/blue_knight.png"/>
               </div>
@@ -101,14 +88,11 @@ function Home() {
                 <p>Unlike other pieces, knights ignore pieces between their starting square and ending square, though they cannot end in a square occupied by a friendly piece.</p>
                 <p>Knights capture by ending their move in a square occupied by an enemy piece.</p>
               </div>
-              <div className="move_image">
-
-              </div>
             </div>
           </div>
           <div>
             <h3>Bishops</h3>
-            <div>
+            <div className="piece_combo">
               <div>
                 <img className="piece_image" src="./pieces/green_bishop.png"/>
               </div>
@@ -118,14 +102,11 @@ function Home() {
                 <p>If there is a a piece between the bishop's starting square and ending square, they cannot take that move.</p>
                 <p>Bishops capture during the course of a normal move: if there is an enemy piece in their ending square, they replace that piece.</p>
               </div>
-              <div className="move_image">
-
-              </div>
             </div>
           </div>
           <div>
             <h3>Queens</h3>
-            <div>
+            <div className="piece_combo">
               <div>
                 <img className="piece_image" src="./pieces/red_queen.png"/>
               </div>
@@ -135,14 +116,11 @@ function Home() {
                 <p>If there is a a piece between the queen's starting square and ending square, they cannot take that move.</p>
                 <p>Queens capture during the course of a normal move: if there is an enemy piece in their ending square, they replace that piece.</p>
               </div>
-              <div className="move_image">
-
-              </div>
             </div>
           </div>
           <div>
             <h3>Kings</h3>
-            <div>
+            <div className="piece_combo">
               <div>
                 <img className="piece_image" src="./pieces/yellow_king.png"/>
               </div>
@@ -154,13 +132,10 @@ function Home() {
                 <p>If a king is captured, all of that clan's pieces are removed from the board. That player has lost.</p>
                 <p></p>
               </div>
-              <div className="move_image">
-
-              </div>
             </div>
           </div>
         </div>
-        <div>
+        <div className="home_section">
           <h2>Special Rules</h2>
           <div>
             <h3>Tunnel Collapse</h3>

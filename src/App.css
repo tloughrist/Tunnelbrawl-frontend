@@ -16,8 +16,8 @@ body {
   flex-direction: column;
   flex-wrap: nowrap;
   margin: auto;
-  width: auto;
-  height: 90%;
+  width: 660px;
+  height: 660px;
   top: 20px;
   background: url("../public/floor_texture.png");
   background-size: cover;
@@ -25,6 +25,10 @@ body {
   border-width: 10px;
   border-style: solid;
   box-shadow: 15px 12px 3px rgb(0, 0, 0, .7), -5px -5px .4em rgb(198, 198, 198, .5);;
+}
+
+.board_div {
+  width: 50%;
 }
 
 .brand-logo {
@@ -80,6 +84,10 @@ body {
   flex-direction: column;
 }
 
+.hand_div {
+  width: 25%;
+}
+
 .hidden {
   display: none;
 }
@@ -127,7 +135,11 @@ body {
   border-width: 1px;
   border-style: solid;
   box-sizing: border-box;
-};
+}
+
+.home_section {
+  margin-bottom: 50px;
+}
 
 .navlink {
   position: relative;
@@ -165,6 +177,15 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
+}
+
+.piece_combo {
+  display: flex;
+  flex-direction: row;
+}
+
+.piece_description {
+  margin-left: 25px;;
 }
 
 .piece_image {
@@ -237,6 +258,10 @@ body {
 .bottom.side--right {
   border-top-left-radius: 25px;
   border-color: rgb(0, 0, 0, 0);
+}
+
+.status_div {
+  width: 25%;
 }
 
 .text_block {

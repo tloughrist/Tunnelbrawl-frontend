@@ -9,7 +9,6 @@ import Logout from "./Components/Logging/Logout.js";
 import Signup from "./Components/Logging/Signup.js";
 import Profile from "./Components/Profile/Profile.js";
 import Taproom from "./Components/Taproom/Taproom.js";
-import Footer from "./Components/Banner/Footer.js";
 
 const LoggedInContext = createContext();
 const UserContext = createContext();

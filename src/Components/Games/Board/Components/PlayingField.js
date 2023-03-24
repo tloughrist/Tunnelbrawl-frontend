@@ -1,7 +1,5 @@
 import React from "react";
 import Hand from './Hand.js';
-import Fallen from './Fallen.js';
-import Taken from './Taken.js';
 import Board from './Board.js';
 import Status from './Status.js';
 
@@ -9,11 +7,15 @@ export default function PlayingField() {
 
   return (
       <div id="playing_field">
-        <Status />
-        <Hand />
-        <Fallen />
-        <Taken />
-        <Board />
+        <div className="hand_div">
+          <Hand />
+        </div>
+        <div className="board_div">
+          <Board />
+        </div>
+        <div className="status_div">
+          <Status />
+        </div>
       </div>
   );
 };

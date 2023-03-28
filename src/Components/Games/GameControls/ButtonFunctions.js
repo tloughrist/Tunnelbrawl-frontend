@@ -1,5 +1,6 @@
 import initialize from '../Fetching/InitializeGame.js';
 import cancel from '../Fetching/CancelGame.js';
+import leave from '../Fetching/LeaveGame.js';
 
 export async function startGame(gameId) {
   const pkg = await initialize(gameId, {status: "active"});
@@ -11,11 +12,12 @@ export async function cancelGame(gameId) {
   return pkg;
 };
 
-export function leaveGame() {
-  
+export async function leaveGame(gameId, userId) {
+  const pkg = await leave(gameId, userId);
+  return pkg;
 };
 
 export async function restartGame(gameId) {
-  const pkg = await initialize(gameId, {turn: "red", phase: "move", round: 1})
+  const pkg = await initialize(gameId, {turn: "red", phase: "move", round: 1});
   return pkg;
 };

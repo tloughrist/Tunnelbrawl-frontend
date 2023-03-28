@@ -117,7 +117,11 @@ export default function Game({ gamePkg, setGames, setSelectedGame }) {
                         setGames={setGames}
                         setSelectedGame={setSelectedGame}
                       />
-                  : <GuestButtons />
+                  : <GuestButtons
+                      game={gameRef.current}
+                      setGames={setGames}
+                      setSelectedGame={setSelectedGame}
+                    />
                 }
                 <PlayingField setterBundle={setterBundle} />
               </div>

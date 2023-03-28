@@ -68,7 +68,7 @@ function Games({ setUser }) {
   }, [user]);
 
   useEffect(() => {
-    if (games.length > 0 && selectedGame !== "none") {
+    if (gamesRef.current.length > 0 && selectedGame !== "none") {
       setGamePkg(gamesRef.current.find((game) => game.game.id === parseInt(selectedGame)))
     }
   }, [games]);
@@ -93,6 +93,9 @@ function Games({ setUser }) {
     setSelectedGame(value);
     const updatedUser = await submitUser(user.id, {...user, current_game: value})
   };
+
+  console.log(games)
+  console.log(selectedGame)
 
   return (
     <div>

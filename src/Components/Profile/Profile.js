@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useContext } from "react";
 import { useNavigate } from "react-router-dom";
+import swal from '@sweetalert/with-react';
 import { LoggedInContext, UserContext } from '../../App';
 
 function Profile({ setUser, logout }) {
@@ -39,6 +40,7 @@ function Profile({ setUser, logout }) {
     await fetch("/logout", {
       method: "DELETE"
     });
+    swal("You've been logged out.")
     logout();
   };
 
@@ -47,7 +49,7 @@ function Profile({ setUser, logout }) {
       await fetch(`/users/${user.id}`, {
         method: "DELETE"
       });
-      alert("Your account has been deleted.")
+      swal("Your account has been deleted.")
       logout();
     }
   };
@@ -66,7 +68,7 @@ function Profile({ setUser, logout }) {
       });
     const usr = await res.json();
     if (usr.errors) {
-      alert(usr.errors);
+      swal(`${usr.errors}`);
     } else {
       setUser(usr);
     }
@@ -97,13 +99,14 @@ function Profile({ setUser, logout }) {
         isLoaded?
           <div className="card" id="profile_card">
             <div className="brand-logo"></div>
-            <p>{user.username}</p>
+            <h2>username</h2>
+            <p><b>{user.username}</b></p>
             <div className="side-by-side_container">
               <div className="side-by-side_element">
                 <h2>change profile</h2>
-                <form onSubmit={handleProfileChange}>
+                <form className="stacked_element" onSubmit={handleProfileChange}>
                   <label htmlFor="email">
-                      email
+                      <p><b>email</b></p>
                     <input
                       type="email"
                       name="email"
@@ -113,7 +116,7 @@ function Profile({ setUser, logout }) {
                     />
                   </label>
                   <label htmlFor="pic">
-                      profile picture
+                    <p><b>profile pic</b></p>
                     <input
                       type="url"
                       name="pic"
@@ -131,14 +134,14 @@ function Profile({ setUser, logout }) {
               </div>
               <div className="side-by-side_element">
                 <h2>change password</h2>
-                <form onSubmit={handlePasswordChange}>
+                <form className="stacked_element" onSubmit={handlePasswordChange}>
                   <input
                     type="text"
                     className="hidden"
                     autoComplete="username"
                   />
                   <label htmlFor="password">
-                    <p>new password</p>
+                    <p><b>new password</b></p>
                     <p className="subtext">(eight character minimum)</p>
                   <input
                     type="password"
@@ -149,7 +152,7 @@ function Profile({ setUser, logout }) {
                   />
                   </label>
                   <label htmlFor="passwordConfirmation">
-                    confirm new password
+                    <p><b>confirm new password</b></p>
                     <input
                       type="password"
                       name="passwordConfirmation"
@@ -164,7 +167,7 @@ function Profile({ setUser, logout }) {
                     className="navlink"
                   />
                 </form>
-                <div>
+                <div className="stacked_element">
                   <h2>manage account</h2>
                   <button onClick={e => handleLogout()} className="navlink">logout</button>
                   <button onClick={e => handleDelete()} className="navlink">delete account</button>

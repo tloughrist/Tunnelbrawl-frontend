@@ -10,7 +10,7 @@ import { LoggedInContext, UserContext } from '../../App';
 
 export const GamesContext = createContext();
 
-function Games({ setUser }) {
+function Games({ }) {
   
   const isLoggedIn = useContext(LoggedInContext);
   const user = useContext(UserContext);
@@ -93,9 +93,6 @@ function Games({ setUser }) {
     setSelectedGame(value);
     const updatedUser = await submitUser(user.id, {...user, current_game: value})
   };
-
-  console.log(games)
-  console.log(selectedGame)
 
   return (
     <div>

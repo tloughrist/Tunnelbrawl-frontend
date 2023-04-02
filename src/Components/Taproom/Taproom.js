@@ -1,12 +1,11 @@
 import React, { useContext, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { LoggedInContext, FriendsContext } from '../../App';
+import { LoggedInContext } from '../../App';
 import PlayersWanted from "./PlayersWanted.js"
 
 function Taproom() {
 
   const isLoggedIn = useContext(LoggedInContext);
-  const friends = useContext(FriendsContext);
 
   const navigate = useNavigate();
 
@@ -21,7 +20,6 @@ function Taproom() {
 
   return (
     <div>
-      <h3>Taproom</h3>
       <PlayersWanted />
     </div>
   );

@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import swal from '@sweetalert/with-react';
 
 function Login({ onLogin }) {
     
@@ -19,7 +20,7 @@ function Login({ onLogin }) {
       });
       const user = await res.json();
       if (user.errors) {
-        alert("Incorrect username/password");
+        swal("Incorrect username/password");
       } else {
         onLogin(user);
       }

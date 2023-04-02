@@ -5,24 +5,20 @@ import Banner from "./Components/Banner/Banner.js";
 import Games from "./Components/Games/Games.js";
 import Home from "./Components/Home/Home.js";
 import Login from "./Components/Logging/Login.js";
-import Logout from "./Components/Logging/Logout.js";
 import Signup from "./Components/Logging/Signup.js";
 import Profile from "./Components/Profile/Profile.js";
 import Taproom from "./Components/Taproom/Taproom.js";
 
 const LoggedInContext = createContext();
 const UserContext = createContext();
-const FriendsContext = createContext();
-
-export { LoggedInContext, UserContext, FriendsContext };
+ 
+export { LoggedInContext, UserContext };
 
 function App() {
 
   const [isLoggedIn, setIsLoggedIn] = useState("unchecked");
   const [user, _setUser] = useState({});
-  const [friends, setFriends] = useState([]);
   const [logNav, setLogNav] = useState(false);
-  const [searchedUsers, setSearchedUsers] = useState([]);
   const navigate = useNavigate();
   const userRef = useRef(user);
 
@@ -38,21 +34,12 @@ function App() {
         const usr = await response.json();
         setUser(usr);
         setIsLoggedIn(true);
-        fetchFriends(usr.id);
-      } else {
+       } else {
         setIsLoggedIn(false);
       }
     };
     fetchData();
   }, [logNav]);
-
-  async function fetchFriends(id) {
-    const response = await fetch(`users/${id}/friends`);
-    if (response.ok) {
-      const frnds = await response.json();
-      setFriends(frnds);
-    }
-  };
 
   function onLogin(user) {
     async function fetchData() {
@@ -61,8 +48,7 @@ function App() {
         const user = await response.json();
         setUser(user);
         setIsLoggedIn(true);
-        fetchFriends(user.id);
-      } else {
+       } else {
         setIsLoggedIn(false);
       }
     };
@@ -74,9 +60,8 @@ function App() {
   };
 
   function logout() {
-    navigate("/logout");
+    navigate("/home");
     setUser();
-    setFriends([]);
     setIsLoggedIn(false);
     setLogNav(false);
   };
@@ -84,28 +69,27 @@ function App() {
   return (
     <LoggedInContext.Provider value={isLoggedIn}>
       <UserContext.Provider value={userRef.current}>
-        <FriendsContext.Provider value={friends}>
-          <div className="App">
-            <Banner />
-            <div id="content_panel">
-              <Routes>
-                <Route path="/games" element={<Games setUser={setUser} />} />
-                <Route path="/login" element={<Login
-                  onLogin={onLogin}
-                />} />
-                <Route path="/logout" element={<Logout />} />
-                <Route path="/signup" element={<Signup />} />
-                <Route path="/profile" element={<Profile
-                  setUser={setUser}
-                  logout={logout}
-                />} />
-                <Route path="/taproom" element={<Taproom />} />
-                <Route path="/home" element={<Home />} />
-                <Route path="/" element={<Navigate to="/home" />} />
-              </Routes>
-            </div>
+        <div className="App">
+          <Banner />
+          <div id="content_panel">
+            <Routes>
+              <Route path="/games" element={<Games />} />
+              <Route path="/login" element={<Login
+                onLogin={onLogin}
+              />} />
+              <Route path="/signup" element={<Signup
+                onLogin={onLogin}
+              />} />
+              <Route path="/profile" element={<Profile
+                setUser={setUser}
+                logout={logout}
+              />} />
+              <Route path="/taproom" element={<Taproom />} />
+              <Route path="/home" element={<Home />} />
+              <Route path="/" element={<Navigate to="/home" />} />
+            </Routes>
           </div>
-        </FriendsContext.Provider>
+        </div>
       </UserContext.Provider>
     </LoggedInContext.Provider>
   );

@@ -20,24 +20,21 @@ function PlayersWanted() {
 
   return (
     <div className="text_block">
-      <h4>Public Games - Players Wanted</h4>
-        <div className="card_container">
-          {
-            publicGames.length > 0 ?
-              <div id="public_games">
-                {publicGames.map((game) =>
-                  <PublicGameCard
-                    key={`game${game.id}`}
-                    game={game}
-                    setPublicGames={setPublicGames}
-                  />
-                )}
-              </div>
-            : <div>       
-                <p>"No games available."</p>
-              </div>
-          }
-        </div>
+        {
+          publicGames.length > 0 ?
+            <div className="card_container" id="public_games">
+              {publicGames.map((game) =>
+                <PublicGameCard
+                  key={`game${game.id}`}
+                  game={game}
+                  setPublicGames={setPublicGames}
+                />
+              )}
+            </div>
+          : <div>       
+              <p>"No games available."</p>
+            </div>
+        }
     </div>
   );
 };

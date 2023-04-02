@@ -87,7 +87,7 @@ export default function Game({ gamePkg, setGames, setSelectedGame }) {
     if (game.turn !== colorRef.current) {
       setMoveAcknowledged(false);
     }
-    if (game.turn === colorRef.current && !moveAcknowledged) {
+    if (game.turn === colorRef.current && !moveAcknowledged  && game.status === "in progress") {
       announceMove()
       .then((value) => {
         if (value) {

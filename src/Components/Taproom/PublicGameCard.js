@@ -16,7 +16,6 @@ function PublicGameCard({ game, setPublicGames }) {
       <p><b>{game.title}</b></p>
       <p><b>Players:</b></p>
       {game.players.map((player) => <p>{player}</p>)}
-      <p><b>Game Type: </b>{game.email_notifications ? "asynchronous" : "synchronous"}</p>
       <button onClick={(e) => handleClick()}>Join</button>
     </div>
   );

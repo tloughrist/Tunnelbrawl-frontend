@@ -84,12 +84,12 @@ function Profile({ setUser, logout }) {
         password
       }),
     });
-    const user = await res.json();
-    if (user.errors) {
-      alert(user.errors)
+    const usr = await res.json();
+    if (usr.errors) {
+      alert(usr.errors)
     } else {
-      console.log(user);
-      setUser(user);
+      console.log(usr);
+      setUser(usr);
     }
   };
 

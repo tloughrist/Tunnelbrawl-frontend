@@ -50,6 +50,7 @@ function Games({ }) {
       received: async (data) => {
         const identifier = JSON.parse(sub.identifier);
         console.log(`Receiving data from channel: GameChannel ${identifier.id}`);
+        console.log(data)
         setGamePkg(data);
       }
     });
@@ -67,11 +68,11 @@ function Games({ }) {
     }
   }, [user]);
 
-  useEffect(() => {
+  /* useEffect(() => {
     if (gamesRef.current.length > 0 && selectedGame !== "none") {
       setGamePkg(gamesRef.current.find((game) => game.game.id === parseInt(selectedGame)))
     }
-  }, [games]);
+  }, [games]); */
 
   useEffect(() => {
     function sendHome(logStatus) {
@@ -93,6 +94,8 @@ function Games({ }) {
     setSelectedGame(value);
     const updatedUser = await submitUser(user.id, {...user, current_game: value})
   };
+
+  console.log(gamePkgRef.current)
 
   return (
     <div>

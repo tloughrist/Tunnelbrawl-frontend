@@ -95,7 +95,7 @@ export default function Game({ gamePkg, setGames, setSelectedGame }) {
         }
       });
     }
-  }, [game])
+  }, [game]);
   
   return (
     <GameContext.Provider value={gameRef.current}>

@@ -1,5 +1,5 @@
 body {
-  background: url("../public/mine_shaft.png") no-repeat center center fixed; 
+  background: url("./Images/mine_shaft.png") no-repeat center center fixed; 
   -webkit-background-size: cover;
   -moz-background-size: cover;
   -o-background-size: cover;
@@ -19,7 +19,7 @@ body {
   width: 660px;
   height: 660px;
   top: 20px;
-  background: url("../public/floor_texture.png");
+  background: url("./Images/floor_texture.png");
   background-size: cover;
   border-image: linear-gradient(to left, #8f6B29, #fde7aa, #DF9F28) 2;
   border-width: 10px;
@@ -34,7 +34,7 @@ body {
 .brand-logo {
   height: 100px;
   width: 100px;
-  background: url("../public/pieces/red_pawn.png");
+  background: url("./Images/pieces/red_pawn.png");
   background-size: 100px;
   margin: auto;
   border-radius: 50%;
@@ -248,7 +248,7 @@ body {
 }
 
 .space--empty {
-  background: url("../public/tunnel_walls.png");
+  background: url("./Images/tunnel_walls.png");
   background-size: cover;
   background-repeat: no-repeat;
 }
@@ -529,5 +529,5 @@ body {
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
-  background: url("../public/floor_texture.png");
+  background: url("./Images/floor_texture.png");
 }

@@ -1,3 +1,4 @@
+import React from "react";
 import Piece from '../Board/Components/Pieces.js';
 
 function pieceConvert(string, setterBundle) {

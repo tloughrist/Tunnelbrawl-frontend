@@ -50,6 +50,7 @@ function Games({ }) {
       received: async (data) => {
         const identifier = JSON.parse(sub.identifier);
         console.log(`Receiving data from channel: GameChannel ${identifier.id}`);
+        console.log(data)
         setGamePkg(data);
       }
     });

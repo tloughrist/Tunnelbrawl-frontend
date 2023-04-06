@@ -52,12 +52,11 @@ export default function Game({ gamePkg, setGames, setSelectedGame }) {
   };
 
   function announceGameWinner() {
-    const winner = game.players.find((player) => {
+    const winner = gamePkg.game.players.find((player) => {
       return player.status === "winner";
-    })
-    if (winner) {
-      return swal("Game Over", `${winner.username} Wins!`);
-    }
+    });
+    console.log(winner);
+    return swal("Game Over", `${winner.username} Wins!`);
   };
 
   function announceMove() {
@@ -73,19 +72,18 @@ export default function Game({ gamePkg, setGames, setSelectedGame }) {
       setGame(gamePkg.game);
       setBoard(convert(gamePkg.board, setterBundle));
       setBoardId(gamePkg.board.id)
-      setColor(gamePkg.game.players.find(({user_id}) => user_id === user.id).color);
+      //setColor(gamePkg.game.players.find(({user_id}) => user_id === user.id).color);
       //Dev only
-      //setColor(gamePkg.game.turn)
+      setColor(gamePkg.game.turn)
     }
   }, [gamePkg])
 
   useEffect(() => {
-    if (game.status === "complete") {
-      console.log(gamePkg)
+    console.log(gamePkg);
+    if (gamePkg.game.status === "complete") {
       announceGameWinner();
     }
   }, [gamePkg]);
-  console.log(gamePkg)
 
   useEffect(() => {
     if (game.turn !== colorRef.current) {

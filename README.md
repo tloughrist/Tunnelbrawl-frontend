@@ -7,7 +7,7 @@ This game was originally designed by Mark Alan Osterhaus and appeared under the 
 The game is designed to be playe synchronously, and each player will see the moves made by other players in real time.
 
 ## Demo
-[![A link to a demo video](https://timloughrist.files.wordpress.com/2023/01/ksnip_20230124-095256.png)](https://youtu.be/GsSZgSAJLoU)
+[![A link to a demo video](https://timloughrist.files.wordpress.com/2023/04/ksnip_20230406-104425.png)](https://youtu.be/3sZGFw-KpPc)
 
 Click the image above to watch a video demonstrating the app.
 

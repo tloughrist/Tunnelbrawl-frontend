@@ -35,7 +35,7 @@ export default function Piece({type, src, alt, setterBundle}) {
           const gamesSans = games.filter(game => game.game.id !== gamePkg.game.id);
           setGames([...gamesSans, gamePkg]);
         } else if (res.statusText === "Not Acceptable") {
-          alert("Illegal move")
+          swal("Illegal move")
         }
         return;
       } else if (spaceItself.contents.type === "empty") {

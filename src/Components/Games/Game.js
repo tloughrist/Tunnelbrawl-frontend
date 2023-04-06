@@ -55,9 +55,7 @@ export default function Game({ gamePkg, setGames, setSelectedGame }) {
     const winner = game.players.find((player) => {
       return player.status === "winner";
     })
-    if (winner) {
-      return swal("Game Over", `${winner.username} Wins!`);
-    }
+    return swal(`${winner.username} Wins!`)
   };
 
   function announceMove() {
@@ -81,11 +79,9 @@ export default function Game({ gamePkg, setGames, setSelectedGame }) {
 
   useEffect(() => {
     if (game.status === "complete") {
-      console.log(gamePkg)
-      announceGameWinner();
+      announceGameWinner()
     }
-  }, [gamePkg]);
-  console.log(gamePkg)
+  }, [game]);
 
   useEffect(() => {
     if (game.turn !== colorRef.current) {

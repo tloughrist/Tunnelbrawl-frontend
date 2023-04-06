@@ -4,7 +4,7 @@ Tunnel Brawl is a two to four player variant of chess.
 ## Description
 This game was originally designed by Mark Alan Osterhaus and appeared under the name Bosworth in the U.S. and Waterloo in Europe. I tried to cleave as close to the original rules as I could.
 
-The game is designed to be playe synchronously, and each player will see the moves made by other players in real time.
+The game is designed to be played synchronously, and each player will see the moves made by other players in real time.
 
 ## Demo
 [![A link to a demo video](https://timloughrist.files.wordpress.com/2023/04/ksnip_20230406-104425.png)](https://youtu.be/3sZGFw-KpPc)

@@ -14,8 +14,6 @@ Click the image above to watch a video demonstrating the app.
 ## Installation
 The current version of the app uses JavaScript/React for the frontend and Ruby on Rails for the backend. It also uses Redis to handle the WebSocket data transfer between the two.
 
-When running npm install, run npm install --force to ignore dependency issues.
-
 The repository for this app can be found [HERE](https://github.com/tloughrist/capstone-frontend) and [HERE](https://github.com/tloughrist/capstone-backend).
 
 ## Usage

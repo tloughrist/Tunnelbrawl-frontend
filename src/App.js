@@ -1,13 +1,13 @@
 import './App.css';
 import React, { createContext, useState, useEffect, useRef } from "react";
 import { Route, Routes, Navigate, useNavigate } from "react-router-dom";
-import Banner from "./Components/Banner/Banner.js";
-import Games from "./Components/Games/Games.js";
-import Home from "./Components/Home/Home.js";
-import Login from "./Components/Logging/Login.js";
-import Signup from "./Components/Logging/Signup.js";
-import Profile from "./Components/Profile/Profile.js";
-import Taproom from "./Components/Taproom/Taproom.js";
+import Banner from "./Components/Banner/banner.js";
+import Games from "./Components/Games/games.js";
+import Home from "./Components/Home/home.js";
+import Login from "./Components/Logging/login.js";
+import Signup from "./Components/Logging/signup.js";
+import Profile from "./Components/Profile/profile.js";
+import Taproom from "./Components/Taproom/taproom.js";
 
 const LoggedInContext = createContext();
 const UserContext = createContext();

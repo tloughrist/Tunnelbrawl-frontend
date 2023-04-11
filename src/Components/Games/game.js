@@ -14,7 +14,7 @@ export const ColorContext = createContext();
 export const BoardIdContext = createContext();
 export const ActivePieceContext = createContext();
 
-export default function Game({ gamePkg, setGames, setSelectedGame }) {
+export default function Game({ gamePkg, setGamePkg, setGames, setSelectedGame }) {
   
   const [boardId, setBoardId] = useState(gamePkg.board.id);
   const user = useContext(UserContext);
@@ -60,7 +60,7 @@ export default function Game({ gamePkg, setGames, setSelectedGame }) {
 
   function announceMove() {
     if (game.round === 1) {
-      return swal("It's your move.", "After your move, don't forget to place a new piece from your hand onto one of the four squares of your tunnel." )
+      return swal("It's your move.", "After your move, don't forget to place a new piece from your hand onto one of the four squares of your tunnel.");
     } else {
       return swal("It's your move.");
     }
@@ -78,9 +78,14 @@ export default function Game({ gamePkg, setGames, setSelectedGame }) {
   }, [gamePkg])
 
   useEffect(() => {
-    console.log(gamePkg);
     if (gamePkg.game.status === "complete") {
       announceGameWinner();
+    } else if (gamePkg.game.status === "canceled") {
+      swal(`${gamePkg.game.title} canceled by ${gamePkg.game.host}.`);
+      setSelectedGame("none");
+      const gamePkgProxy = gamePkg;
+      gamePkgProxy.game.status = "pending";
+      setGamePkg(gamePkgProxy);
     }
   }, [gamePkg]);
 

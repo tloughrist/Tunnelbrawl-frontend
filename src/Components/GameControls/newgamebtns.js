@@ -3,7 +3,7 @@ import { UserContext } from '../../App.js';
 import createGame from '../Fetching/creategame.js';
 import Popup from 'reactjs-popup';
 
-export default function NewGameBtns({ games, setGames, setGame }) {
+export default function NewGameBtns({ games, setGames, setSelectedGame }) {
 
   const user = useContext(UserContext);
 
@@ -12,8 +12,8 @@ export default function NewGameBtns({ games, setGames, setGame }) {
   async function handleSubmit(e){
     e.preventDefault();
     const gamePkg = await createGame(user.id, title);
-    setGames = [...games, gamePkg];
-    setGame(gamePkg);
+    setGames([...games, gamePkg]);
+    setSelectedGame(gamePkg.game.id);
   };
 
   return (

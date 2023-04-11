@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useContext, useRef, createContext } from "react";
 import { useNavigate } from "react-router-dom";
 import ActionCable from "actioncable";
-import { createConsumer } from "actioncable";
 import Game from './game.js';
 import GameOptions from './gameoptions.js';
 import NewGame from './newgame.js';
@@ -32,7 +31,7 @@ function Games({ }) {
 
   function setGamePkg(data) {
     gamePkgRef.current = data;
-    _setGames(data);
+    _setGamePkg(data);
   };
 
   function subscribe() {
@@ -86,7 +85,7 @@ function Games({ }) {
 
   async function handleSelect(value) {
     setSelectedGame(value);
-    const updatedUser = await submitUser(user.id, {...user, current_game: value})
+    const updatedUser = await submitUser(user.id, {...user, current_game: value});
   };
 
   return (
@@ -106,7 +105,7 @@ function Games({ }) {
                     game={game.game}
                   />
                 )
-              : <option value={{}}>No games available</option>
+              : <option value={"none"}>No games available</option>
             }
           </select>
         </div>
@@ -115,13 +114,15 @@ function Games({ }) {
             selectedGame !== "none" && Object.keys(gamePkgRef.current).length > 0 ?
               <Game
                 gamePkg={gamePkgRef.current}
+                setGamePkg={setGamePkg}
                 setGames={setGames}
                 selectedGame={selectedGame}
                 setSelectedGame = {setSelectedGame}
               />
             : <NewGame
+                games={gamesRef.current}
                 setGames={setGames}
-                setGame={setSelectedGame}
+                setSelectedGame={setSelectedGame}
               />
           }
         </div>

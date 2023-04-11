@@ -26,7 +26,7 @@ export default function Piece({type, src, alt, setterBundle}) {
         const res = await movepiece(boardId, activePiece, spaceId);
         if (res.ok) {
           const gamePkg = await res.json();
-          const gamesSans = games.filter(game => game.gspaceIdame.id !== gamePkg.game.id);
+          const gamesSans = games.filter(game => game.game.id !== gamePkg.game.id);
           setGames([...gamesSans, gamePkg]);
         } else if (res.statusText === "Not Acceptable") {
           swal("Illegal move")

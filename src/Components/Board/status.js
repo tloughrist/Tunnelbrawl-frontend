@@ -12,6 +12,7 @@ export default function Status() {
   return (
     <div className='text_block'>
       <h3>Game Info</h3>
+      <p><b>Title:</b> {game.title} </p>
       <p><b>Status:</b> {game.status} </p>
       <p><b>Round:</b> {game.round} </p>
       <p><b>Turn:</b> {capFirst(game.turn)} </p>

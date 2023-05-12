@@ -27,7 +27,7 @@ function App() {
     userRef.current = data;
   };
 
-  useEffect(() => {
+  /* useEffect(() => {
     async function fetchData() {
       const response = await fetch("https://tunnelbrawl.onrender.com/me");
       if (response.ok) {
@@ -39,7 +39,7 @@ function App() {
       }
     };
     fetchData();
-  }, [logNav]);
+  }, [logNav]); */
 
   function onLogin(usr) {
     /* async function fetchData() {

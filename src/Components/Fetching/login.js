@@ -9,6 +9,5 @@ export default async function login(username, password) {
       password: password
     }),
   });
-  console.log(res);
   return res;
 };

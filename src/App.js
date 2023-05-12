@@ -60,6 +60,8 @@ function App() {
     navigate("/home");
   };
 
+  console.log(isLoggedIn);
+
   function logout() {
     navigate("/home");
     setUser();

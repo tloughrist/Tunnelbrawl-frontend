@@ -44,6 +44,7 @@ function App() {
   function onLogin(user) {
     async function fetchData() {
       const response = await fetch("https://tunnelbrawl.onrender.com/me");
+      console.log(response);
       if (response.ok) {
         const user = await response.json();
         setUser(user);

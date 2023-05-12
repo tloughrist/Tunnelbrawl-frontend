@@ -16,7 +16,7 @@ export { LoggedInContext, UserContext };
 
 function App() {
 
-  const [isLoggedIn, setIsLoggedIn] = useState("unchecked");
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [user, _setUser] = useState({});
   const [logNav, setLogNav] = useState(false);
   const navigate = useNavigate();

@@ -38,7 +38,7 @@ function App() {
         setIsLoggedIn(false);
       }
     };
-    fetchData();
+    //fetchData();
   }, [logNav]);
 
   function onLogin(usr) {
@@ -55,7 +55,7 @@ function App() {
     }; */
     setUser(usr);
     setIsLoggedIn(true);
-    setLogNav(true);
+    //setLogNav(true);
     //fetchData();
     navigate("/home");
   };
@@ -66,7 +66,7 @@ function App() {
     navigate("/home");
     setUser();
     setIsLoggedIn(false);
-    setLogNav(false);
+    //setLogNav(false);
   };
 
   return (

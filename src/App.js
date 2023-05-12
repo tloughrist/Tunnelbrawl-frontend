@@ -41,19 +41,19 @@ function App() {
     fetchData();
   }, [logNav]);
 
-  function onLogin(user) {
-    async function fetchData() {
+  function onLogin(usr) {
+    /* async function fetchData() {
       const response = await fetch("https://tunnelbrawl.onrender.com/me");
       console.log(response);
       if (response.ok) {
         const user = await response.json();
-        setUser(user);
+        setUser(usr);
         setIsLoggedIn(true);
        } else {
         setIsLoggedIn(false);
       }
-    };
-    setUser(user);
+    }; */
+    setUser(usr);
     setIsLoggedIn(true);
     setLogNav(true);
     fetchData();

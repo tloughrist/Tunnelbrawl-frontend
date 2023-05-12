@@ -56,7 +56,7 @@ function App() {
     setUser(usr);
     setIsLoggedIn(true);
     setLogNav(true);
-    fetchData();
+    //fetchData();
     navigate("/home");
   };
 

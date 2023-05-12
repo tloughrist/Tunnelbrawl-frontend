@@ -1,5 +1,5 @@
 export default async function submitUser(userId, newUserObj) {
-  const res = await fetch(`/users/${userId}`, {
+  const res = await fetch(`https://tunnelbrawl.onrender.com/users/${userId}`, {
     method: "PATCH",
     headers: {
         "Content-Type": "application/json",

@@ -1,5 +1,5 @@
 export default async function movepiece(boardId, activePiece, spaceId) {
-  const res = await fetch(`boards/move_piece/${boardId}`, {
+  const res = await fetch(`https://tunnelbrawl.onrender.com/boards/move_piece/${boardId}`, {
     method: "PUT",
     headers: {
       "Content-Type": "application/json",

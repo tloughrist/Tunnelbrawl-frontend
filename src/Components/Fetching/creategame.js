@@ -1,5 +1,5 @@
 export default async function createGame(userId, title) {
-  const res = await fetch(`/games`, {
+  const res = await fetch(`https://tunnelbrawl.onrender.com/games`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",

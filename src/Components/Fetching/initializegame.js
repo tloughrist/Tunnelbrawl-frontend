@@ -1,5 +1,5 @@
 export default async function initialize(gameId, gameUpdateObj) {
-  const res = await fetch(`/games/initialize/${gameId}`, {
+  const res = await fetch(`https://tunnelbrawl.onrender.com/games/initialize/${gameId}`, {
     method: "PUT",
     headers: {
         "Content-Type": "application/json",

@@ -1,5 +1,5 @@
 export default async function joinGame(game_id, user_id) {
-  const response = await fetch(`/players`, {
+  const response = await fetch(`https://tunnelbrawl.onrender.com/players`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",

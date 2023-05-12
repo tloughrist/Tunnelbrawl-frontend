@@ -1,5 +1,5 @@
 export default async function leave(playerId) {
-  const res = await fetch(`/players/${playerId}`, {
+  const res = await fetch(`https://tunnelbrawl.onrender.com/players/${playerId}`, {
     method: "DELETE"
   });
   if (res.ok) {

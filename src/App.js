@@ -29,7 +29,7 @@ function App() {
 
   useEffect(() => {
     async function fetchData() {
-      const response = await fetch("/me");
+      const response = await fetch("https://tunnelbrawl.onrender.com/me");
       if (response.ok) {
         const usr = await response.json();
         setUser(usr);
@@ -43,7 +43,7 @@ function App() {
 
   function onLogin(user) {
     async function fetchData() {
-      const response = await fetch("/me");
+      const response = await fetch("https://tunnelbrawl.onrender.com/me");
       if (response.ok) {
         const user = await response.json();
         setUser(user);

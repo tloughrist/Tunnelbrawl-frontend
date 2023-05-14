@@ -17,20 +17,21 @@ export { LoggedInContext, UserContext };
 function App() {
 
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [user, _setUser] = useState({});
+  const [user, setUser] = useState({});
   const [logNav, setLogNav] = useState(false);
   const navigate = useNavigate();
   const userRef = useRef(user);
 
-  function setUser(data) {
+  /* function setUser(data) {
     _setUser(data);
     userRef.current = data;
-  };
+  }; */
 
   useEffect(() => {
     async function fetchData() {
       const response = await fetch("https://tunnelbrawl.onrender.com/me");
       if (response.ok) {
+        console.log("fetch")
         const usr = await response.json();
         setUser(usr);
         setIsLoggedIn(true);
@@ -38,8 +39,8 @@ function App() {
         setIsLoggedIn(false);
       }
     };
-    //fetchData();
-  }, [logNav]);
+    fetchData();
+  }, []);
 
   function onLogin(usr) {
     /* async function fetchData() {

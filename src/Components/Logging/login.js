@@ -9,7 +9,8 @@ function Login({ onLogin }) {
 
     async function handleSubmit(e) {
       e.preventDefault();
-      const res = await login(username, password); 
+      const res = await login(username, password);
+      console.log(res)
       const user = await res.json();
       if (user.errors) {
         swal("Incorrect username/password");

@@ -32,7 +32,7 @@ function PlayersWanted() {
               )}
             </div>
           : <div>       
-              <p>"No games available."</p>
+              <p>No games available at this time.</p>
             </div>
         }
     </div>

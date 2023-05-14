@@ -1,5 +1,5 @@
 export default async function signup(username, email, profilePic, password) {
-  const res = await fetch(`https://tunnelbrawl.onrender.com/signup`, {
+  const res = await fetch(`/signup`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
